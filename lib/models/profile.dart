@@ -1,6 +1,4 @@
-// import 'dart:io';
 import 'package:isar/isar.dart';
-// import 'dart:typed_data';
 
 part 'profile.g.dart';
 

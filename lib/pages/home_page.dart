@@ -1,17 +1,16 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:hitomemo/pages/add_person_page.dart';
 import 'package:hitomemo/pages/profile_detail_page.dart';
-import 'package:hitomemo/providers/profile_service_provider.dart';
+import 'package:hitomemo/services/isar_service.dart';
+import 'package:hitomemo/models/profile.dart';
 
 // ホーム画面
-class HomePage extends ConsumerWidget {
-  const HomePage({Key? key}) : super(key: key);
+class HomePage extends StatelessWidget {
+  HomePage({Key? key}) : super(key: key);
+  final service = IsarService();
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final profiles = ref.watch(profileListProvider).value;
-
+  Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         title: const Text('People List'),
@@ -31,7 +30,8 @@ class HomePage extends ConsumerWidget {
       // リスト表示
       body:
           // profiles
-          profiles == null
+          List<Profile> profiles = service.getAllProfiles();
+          service.getAllProfiles().isEmpty
               ? const Center(
                   child: Text('Add new person by tapping the + button.'))
               : ListView.separated(

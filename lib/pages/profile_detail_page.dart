@@ -1,6 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:hitomemo/providers/profile_service_provider.dart';
 
 // Profile Detail
 class ProfileDetailWidget extends ConsumerWidget {

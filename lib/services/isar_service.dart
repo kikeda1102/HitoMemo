@@ -21,7 +21,7 @@ class IsarService {
 
   Stream<List<Profile>> listenToProfiles() async* {
     final isar = await db;
-    yield* isar.profiles.where().watch(); // 初回の要素リストを最初に返す
+    yield* isar.profiles.where().watch(fireImmediately: true); // 初回の要素リストを最初に返す
   }
 
   Future<void> clearDb() async {

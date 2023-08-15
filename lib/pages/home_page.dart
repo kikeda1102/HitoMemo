@@ -78,9 +78,13 @@ class HomePage extends StatelessWidget {
                       },
                     );
                   } else if (snapshot.hasError) {
-                    return const Center(child: Text('Error'));
+                    return const Center(child: Text('Error occurred'));
                   } else {
-                    return const Center(child: CircularProgressIndicator());
+                    return const Center(
+                        child: Text(
+                      'Add a new person by + button.',
+                      style: TextStyle(fontSize: 15),
+                    ));
                   }
                 },
               ),

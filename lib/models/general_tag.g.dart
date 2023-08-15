@@ -17,9 +17,9 @@ const GeneralTagSchema = CollectionSchema(
   name: r'GeneralTag',
   id: -8314435717824953522,
   properties: {
-    r'name': PropertySchema(
+    r'title': PropertySchema(
       id: 0,
-      name: r'name',
+      name: r'title',
       type: IsarType.string,
     )
   },
@@ -43,7 +43,7 @@ int _generalTagEstimateSize(
   Map<Type, List<int>> allOffsets,
 ) {
   var bytesCount = offsets.last;
-  bytesCount += 3 + object.name.length * 3;
+  bytesCount += 3 + object.title.length * 3;
   return bytesCount;
 }
 
@@ -53,7 +53,7 @@ void _generalTagSerialize(
   List<int> offsets,
   Map<Type, List<int>> allOffsets,
 ) {
-  writer.writeString(offsets[0], object.name);
+  writer.writeString(offsets[0], object.title);
 }
 
 GeneralTag _generalTagDeserialize(
@@ -63,7 +63,7 @@ GeneralTag _generalTagDeserialize(
   Map<Type, List<int>> allOffsets,
 ) {
   final object = GeneralTag(
-    name: reader.readString(offsets[0]),
+    title: reader.readString(offsets[0]),
   );
   object.id = id;
   return object;
@@ -227,20 +227,20 @@ extension GeneralTagQueryFilter
     });
   }
 
-  QueryBuilder<GeneralTag, GeneralTag, QAfterFilterCondition> nameEqualTo(
+  QueryBuilder<GeneralTag, GeneralTag, QAfterFilterCondition> titleEqualTo(
     String value, {
     bool caseSensitive = true,
   }) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.equalTo(
-        property: r'name',
+        property: r'title',
         value: value,
         caseSensitive: caseSensitive,
       ));
     });
   }
 
-  QueryBuilder<GeneralTag, GeneralTag, QAfterFilterCondition> nameGreaterThan(
+  QueryBuilder<GeneralTag, GeneralTag, QAfterFilterCondition> titleGreaterThan(
     String value, {
     bool include = false,
     bool caseSensitive = true,
@@ -248,14 +248,14 @@ extension GeneralTagQueryFilter
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.greaterThan(
         include: include,
-        property: r'name',
+        property: r'title',
         value: value,
         caseSensitive: caseSensitive,
       ));
     });
   }
 
-  QueryBuilder<GeneralTag, GeneralTag, QAfterFilterCondition> nameLessThan(
+  QueryBuilder<GeneralTag, GeneralTag, QAfterFilterCondition> titleLessThan(
     String value, {
     bool include = false,
     bool caseSensitive = true,
@@ -263,14 +263,14 @@ extension GeneralTagQueryFilter
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.lessThan(
         include: include,
-        property: r'name',
+        property: r'title',
         value: value,
         caseSensitive: caseSensitive,
       ));
     });
   }
 
-  QueryBuilder<GeneralTag, GeneralTag, QAfterFilterCondition> nameBetween(
+  QueryBuilder<GeneralTag, GeneralTag, QAfterFilterCondition> titleBetween(
     String lower,
     String upper, {
     bool includeLower = true,
@@ -279,7 +279,7 @@ extension GeneralTagQueryFilter
   }) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.between(
-        property: r'name',
+        property: r'title',
         lower: lower,
         includeLower: includeLower,
         upper: upper,
@@ -289,69 +289,70 @@ extension GeneralTagQueryFilter
     });
   }
 
-  QueryBuilder<GeneralTag, GeneralTag, QAfterFilterCondition> nameStartsWith(
+  QueryBuilder<GeneralTag, GeneralTag, QAfterFilterCondition> titleStartsWith(
     String value, {
     bool caseSensitive = true,
   }) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.startsWith(
-        property: r'name',
+        property: r'title',
         value: value,
         caseSensitive: caseSensitive,
       ));
     });
   }
 
-  QueryBuilder<GeneralTag, GeneralTag, QAfterFilterCondition> nameEndsWith(
+  QueryBuilder<GeneralTag, GeneralTag, QAfterFilterCondition> titleEndsWith(
     String value, {
     bool caseSensitive = true,
   }) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.endsWith(
-        property: r'name',
+        property: r'title',
         value: value,
         caseSensitive: caseSensitive,
       ));
     });
   }
 
-  QueryBuilder<GeneralTag, GeneralTag, QAfterFilterCondition> nameContains(
+  QueryBuilder<GeneralTag, GeneralTag, QAfterFilterCondition> titleContains(
       String value,
       {bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.contains(
-        property: r'name',
+        property: r'title',
         value: value,
         caseSensitive: caseSensitive,
       ));
     });
   }
 
-  QueryBuilder<GeneralTag, GeneralTag, QAfterFilterCondition> nameMatches(
+  QueryBuilder<GeneralTag, GeneralTag, QAfterFilterCondition> titleMatches(
       String pattern,
       {bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.matches(
-        property: r'name',
+        property: r'title',
         wildcard: pattern,
         caseSensitive: caseSensitive,
       ));
     });
   }
 
-  QueryBuilder<GeneralTag, GeneralTag, QAfterFilterCondition> nameIsEmpty() {
+  QueryBuilder<GeneralTag, GeneralTag, QAfterFilterCondition> titleIsEmpty() {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.equalTo(
-        property: r'name',
+        property: r'title',
         value: '',
       ));
     });
   }
 
-  QueryBuilder<GeneralTag, GeneralTag, QAfterFilterCondition> nameIsNotEmpty() {
+  QueryBuilder<GeneralTag, GeneralTag, QAfterFilterCondition>
+      titleIsNotEmpty() {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.greaterThan(
-        property: r'name',
+        property: r'title',
         value: '',
       ));
     });
@@ -366,15 +367,15 @@ extension GeneralTagQueryLinks
 
 extension GeneralTagQuerySortBy
     on QueryBuilder<GeneralTag, GeneralTag, QSortBy> {
-  QueryBuilder<GeneralTag, GeneralTag, QAfterSortBy> sortByName() {
+  QueryBuilder<GeneralTag, GeneralTag, QAfterSortBy> sortByTitle() {
     return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'name', Sort.asc);
+      return query.addSortBy(r'title', Sort.asc);
     });
   }
 
-  QueryBuilder<GeneralTag, GeneralTag, QAfterSortBy> sortByNameDesc() {
+  QueryBuilder<GeneralTag, GeneralTag, QAfterSortBy> sortByTitleDesc() {
     return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'name', Sort.desc);
+      return query.addSortBy(r'title', Sort.desc);
     });
   }
 }
@@ -393,25 +394,25 @@ extension GeneralTagQuerySortThenBy
     });
   }
 
-  QueryBuilder<GeneralTag, GeneralTag, QAfterSortBy> thenByName() {
+  QueryBuilder<GeneralTag, GeneralTag, QAfterSortBy> thenByTitle() {
     return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'name', Sort.asc);
+      return query.addSortBy(r'title', Sort.asc);
     });
   }
 
-  QueryBuilder<GeneralTag, GeneralTag, QAfterSortBy> thenByNameDesc() {
+  QueryBuilder<GeneralTag, GeneralTag, QAfterSortBy> thenByTitleDesc() {
     return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'name', Sort.desc);
+      return query.addSortBy(r'title', Sort.desc);
     });
   }
 }
 
 extension GeneralTagQueryWhereDistinct
     on QueryBuilder<GeneralTag, GeneralTag, QDistinct> {
-  QueryBuilder<GeneralTag, GeneralTag, QDistinct> distinctByName(
+  QueryBuilder<GeneralTag, GeneralTag, QDistinct> distinctByTitle(
       {bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
-      return query.addDistinctBy(r'name', caseSensitive: caseSensitive);
+      return query.addDistinctBy(r'title', caseSensitive: caseSensitive);
     });
   }
 }
@@ -424,9 +425,9 @@ extension GeneralTagQueryProperty
     });
   }
 
-  QueryBuilder<GeneralTag, String, QQueryOperations> nameProperty() {
+  QueryBuilder<GeneralTag, String, QQueryOperations> titleProperty() {
     return QueryBuilder.apply(this, (query) {
-      return query.addPropertyName(r'name');
+      return query.addPropertyName(r'title');
     });
   }
 }

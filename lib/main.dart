@@ -1,14 +1,27 @@
 import 'package:flutter/material.dart';
 import 'package:hitomemo/pages/home_page.dart';
+import 'package:hitomemo/models/general_tag.dart';
+import 'package:hitomemo/services/isar_service.dart';
 
 // hitomemo
 // 初対面の人のプロフィールを記録し一覧表示できるメモアプリ
 void main() async {
-  runApp(const MyApp());
+  WidgetsFlutterBinding.ensureInitialized();
+  // IsarServiceのインスタンスを生成
+  final service = IsarService();
+  // アプリケーションの初期化処理
+  await initializeDb(service);
+  // アプリケーションの起動
+  runApp(MyApp(service: service));
+}
+
+Future<void> initializeDb(IsarService service) async {
+  await service.addGeneralTag(GeneralTag(title: 'Friend'));
 }
 
 class MyApp extends StatelessWidget {
-  const MyApp({Key? key}) : super(key: key);
+  final IsarService service;
+  const MyApp({required this.service, Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -18,7 +31,7 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.blueGrey,
       ),
-      home: HomePage(),
+      home: HomePage(service: service),
     );
   }
 }

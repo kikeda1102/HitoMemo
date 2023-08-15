@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:hitomemo/services/isar_service.dart';
 import 'package:hitomemo/models/profile.dart';
+import 'package:hitomemo/models/general_tag.dart';
 
 // 追加画面
 
@@ -108,30 +109,44 @@ class _AddPersonPageState extends State<AddPersonPage> {
                 ),
                 AnimatedCrossFade(
                   firstChild: const SizedBox(),
-                  secondChild: Wrap(
-  spacing: 10,
-  runSpacing: -8,
-  children: 
-      .then((tags) {
-        return tags.map(
-          (tag) => FilterChip(
-            label: Text(tag),
-            onSelected: (isSelected) {
-              setState(() {
-                if (isSelected) {
-                  newProfile.personalTags.add(tag);
-                } else {
-                  newProfile.personalTags.remove(tag);
-                }
-                generalTags.toggleTag(tag);
-              });
-            },
-            selected: generalTags.isTagToggled(tag),
-          ),
-        ).toList();
-      }),
-),
+                  secondChild: FutureBuilder<List<GeneralTag>>(
+                    future: widget.service.getAllGeneralTags(),
+                    builder: (context, snapshot) {
+                      if (snapshot.connectionState == ConnectionState.waiting) {
+                        return const CircularProgressIndicator(); // 読み込み中の表示
+                      } else if (snapshot.hasError) {
+                        return Text('Error: ${snapshot.error}');
+                      } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
+                        return const Text('No general tags available');
+                      }
 
+                      List<GeneralTag> generalTags = snapshot.data!;
+                      List<GeneralTag> toggledTags = [];
+
+                      return Wrap(
+                        spacing: 10,
+                        runSpacing: -8,
+                        children: generalTags
+                            .map(
+                              (tag) => FilterChip(
+                                label: Text(tag.title),
+                                onSelected: (isSelected) {
+                                  setState(() {
+                                    if (isSelected) {
+                                      newProfile.personalTags.add(tag.title);
+                                    } else {
+                                      newProfile.personalTags.remove(tag.title);
+                                    }
+                                    toggledTags.add(tag);
+                                  });
+                                },
+                                selected: toggledTags.contains(tag),
+                              ),
+                            )
+                            .toList(),
+                      );
+                    },
+                  ),
                   crossFadeState: _isGeneralTagsExpanded
                       ? CrossFadeState.showSecond
                       : CrossFadeState.showFirst,

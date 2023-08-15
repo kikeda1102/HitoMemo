@@ -6,8 +6,8 @@ import 'package:hitomemo/models/profile.dart';
 
 // ホーム画面
 class HomePage extends StatelessWidget {
-  HomePage({Key? key}) : super(key: key);
-  final service = IsarService();
+  final IsarService service;
+  const HomePage({required this.service, Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {

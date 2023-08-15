@@ -5,7 +5,7 @@ part 'general_tag.g.dart';
 class GeneralTag {
   Id id = Isar.autoIncrement;
 
-  final String name;
+  final String title;
 
-  GeneralTag({required this.name});
+  GeneralTag({required this.title});
 }

@@ -1,5 +1,6 @@
 import 'package:isar/isar.dart';
 import 'package:hitomemo/models/profile.dart';
+import 'package:path_provider/path_provider.dart';
 
 class IsarService {
   late Future<Isar> db;
@@ -20,7 +21,7 @@ class IsarService {
 
   Stream<List<Profile>> listenToProfiles() async* {
     final isar = await db;
-    yield* isar.profiles.where().watch();
+    yield* isar.profiles.where().watch(); // 初回の要素リストを最初に返す
   }
 
   Future<void> clearDb() async {
@@ -30,10 +31,11 @@ class IsarService {
 
   Future<Isar> openDB() async {
     if (Isar.instanceNames.isEmpty) {
+      final dir = await getApplicationDocumentsDirectory();
       return await Isar.open(
         [ProfileSchema],
         inspector: true,
-        directory: 'isar', // データベースファイルの保存先
+        directory: dir.path,
       );
     }
 

@@ -4,6 +4,44 @@ import 'package:hitomemo/models/profile.dart';
 
 // 追加画面
 
+class GeneralTags {
+  static final List<String> _tags = [
+    'Friends',
+    'Family',
+    'Colleagues',
+  ];
+
+  //getter
+  List<String> get tags => _tags;
+
+  Set<String> toggledOnGeneralTags = {}; // トグルオンされたタグを格納するSet
+
+  bool _isExpanded = false;
+
+  bool get isExpanded => _isExpanded;
+
+  void toggleIsExpanded() {
+    _isExpanded = !_isExpanded;
+  }
+
+  void toggleTag(String tag) {
+    if (toggledOnGeneralTags.contains(tag)) {
+      toggledOnGeneralTags.remove(tag);
+    } else {
+      toggledOnGeneralTags.add(tag);
+    }
+  }
+
+  bool isTagToggled(String tag) {
+    return toggledOnGeneralTags.contains(tag);
+  }
+
+  void resetGeneralTags() {
+    toggledOnGeneralTags.clear();
+    _isExpanded = false;
+  }
+}
+
 // Person追加画面
 class AddPersonPage extends StatefulWidget {
   final IsarService service;
@@ -22,8 +60,8 @@ class _AddPersonPageState extends State<AddPersonPage> {
     memo: '',
   );
 
-  List<String> generalTags = ['friend', 'family', 'colleague'];
-  bool isGeneralTagsExpanded = false;
+  GeneralTags generalTags = GeneralTags();
+
   final _nameTextController = TextEditingController();
   final _memoTextController = TextEditingController();
 
@@ -53,11 +91,11 @@ class _AddPersonPageState extends State<AddPersonPage> {
                     border: UnderlineInputBorder(),
                   ),
                   validator: (value) {
-                if (value == null || value.isEmpty) {
-                  return "Please enter the name.";
-                }
-                return null;
-              },
+                    if (value == null || value.isEmpty) {
+                      return "Please enter the name.";
+                    }
+                    return null;
+                  },
                 ),
               ),
               const SizedBox(height: 20),
@@ -67,8 +105,7 @@ class _AddPersonPageState extends State<AddPersonPage> {
               Wrap(
                 spacing: 8,
                 runSpacing: -2,
-                children: newProfile
-                    .personalTags
+                children: newProfile.personalTags
                     .map((tag) => Chip(label: Text(tag)))
                     .toList(),
               ),
@@ -82,10 +119,10 @@ class _AddPersonPageState extends State<AddPersonPage> {
                   title: const Text('Choose from general tags'),
                   onTap: () {
                     setState(() {
-                      isGeneralTagsExpanded = !isGeneralTagsExpanded;
+                      generalTags.toggleIsExpanded();
                     });
                   },
-                  trailing: isGeneralTagsExpanded
+                  trailing: generalTags.isExpanded
                       ? const Icon(Icons.expand_less)
                       : const Icon(Icons.expand_more),
                 ),
@@ -95,7 +132,7 @@ class _AddPersonPageState extends State<AddPersonPage> {
                 secondChild: Wrap(
                   spacing: 10,
                   runSpacing: -8,
-                  children: generalTags
+                  children: generalTags.tags
                       .map(
                         (tag) => FilterChip(
                           label: Text(tag),
@@ -105,7 +142,7 @@ class _AddPersonPageState extends State<AddPersonPage> {
                               newProfile.personalTags.remove(tag);
                             } else {
                               // ToggleがFalseの場合は、PersonalTagsにタグを追加
-                              newProfile.personalTags.add(tag);                              
+                              newProfile.personalTags.add(tag);
                             }
                             // タグの選択状態をトグル
                             generalTags.toggleTag(tag);
@@ -115,7 +152,7 @@ class _AddPersonPageState extends State<AddPersonPage> {
                       )
                       .toList(),
                 ),
-                crossFadeState: .isExpanded
+                crossFadeState: generalTags.isExpanded
                     ? CrossFadeState.showSecond
                     : CrossFadeState.showFirst,
                 duration: const Duration(milliseconds: 200),
@@ -141,29 +178,14 @@ class _AddPersonPageState extends State<AddPersonPage> {
               // 登録ボタン
               ElevatedButton(
                 onPressed: () {
-                  if (newName.isNotEmpty) {
-                    // profileの作成
-                    ref.read(newProfileProvider.notifier).createNewProfile(
-                          newName: newName,
-                          newImageBytes: newImageBytes,
-                          newPersonalTags:
-                              ref.watch(newProfileProvider).personalTags,
-                          newMemo: newMemo,
-                        );
+                  if (newProfile.name.isNotEmpty) {
                     // profileの追加
-                    ref.read(profileServiceProvider.future).then((service) =>
-                        service.addProfile(
-                            newImageBytes,
-                            newName,
-                            ref.watch(newProfileProvider).personalTags,
-                            newMemo));
-                    // 閉じて元の画面に戻る
+                    widget.service.addProfile(newProfile);
                     Navigator.pop(context);
                   } else {
-                    // 名前が入力されていない場合はエラーを発生させる
-                    ref.read(nameErrorProvider.notifier).invokeError();
+                    // TODO: 名前が入力されていない場合はエラーを発生させる
                   }
-                  // TODO: newName, ... の初期化
+                  // TODO: newProfileの初期化
                 },
                 child: const Text('register'),
               ),

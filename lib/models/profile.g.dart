@@ -68,7 +68,12 @@ int _profileEstimateSize(
   Map<Type, List<int>> allOffsets,
 ) {
   var bytesCount = offsets.last;
-  bytesCount += 3 + object.imageBytes.length;
+  {
+    final value = object.imageBytes;
+    if (value != null) {
+      bytesCount += 3 + value.length;
+    }
+  }
   bytesCount += 3 + object.memo.length * 3;
   bytesCount += 3 + object.name.length * 3;
   bytesCount += 3 + object.personalTags.length * 3;
@@ -102,7 +107,7 @@ Profile _profileDeserialize(
   Map<Type, List<int>> allOffsets,
 ) {
   final object = Profile(
-    imageBytes: reader.readByteList(offsets[1]) ?? [],
+    imageBytes: reader.readByteList(offsets[1]),
     memo: reader.readString(offsets[2]),
     name: reader.readString(offsets[3]),
     personalTags: reader.readStringList(offsets[4]) ?? [],
@@ -123,7 +128,7 @@ P _profileDeserializeProp<P>(
     case 0:
       return (reader.readDateTime(offset)) as P;
     case 1:
-      return (reader.readByteList(offset) ?? []) as P;
+      return (reader.readByteList(offset)) as P;
     case 2:
       return (reader.readString(offset)) as P;
     case 3:
@@ -327,6 +332,22 @@ extension ProfileQueryFilter
         includeLower: includeLower,
         upper: upper,
         includeUpper: includeUpper,
+      ));
+    });
+  }
+
+  QueryBuilder<Profile, Profile, QAfterFilterCondition> imageBytesIsNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const FilterCondition.isNull(
+        property: r'imageBytes',
+      ));
+    });
+  }
+
+  QueryBuilder<Profile, Profile, QAfterFilterCondition> imageBytesIsNotNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const FilterCondition.isNotNull(
+        property: r'imageBytes',
       ));
     });
   }
@@ -1201,7 +1222,7 @@ extension ProfileQueryProperty
     });
   }
 
-  QueryBuilder<Profile, List<int>, QQueryOperations> imageBytesProperty() {
+  QueryBuilder<Profile, List<int>?, QQueryOperations> imageBytesProperty() {
     return QueryBuilder.apply(this, (query) {
       return query.addPropertyName(r'imageBytes');
     });

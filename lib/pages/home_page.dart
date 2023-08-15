@@ -15,10 +15,10 @@ class HomePage extends StatelessWidget {
       appBar: AppBar(
         title: const Text('People List'),
         actions: [
-          // TODO: 検索機能
           IconButton(
             icon: const Icon(Icons.search),
             onPressed: () {
+              // TODO: 検索機能
               // showSearch(
               //   context: context,
               //   delegate: PersonSearchDelegate(personList.personList),
@@ -28,21 +28,21 @@ class HomePage extends StatelessWidget {
         ],
       ),
       // リスト表示
-      body:
-          // profiles
-          List<Profile> profiles = service.getAllProfiles();
-          service.getAllProfiles().isEmpty
-              ? const Center(
-                  child: Text('Add new person by tapping the + button.'))
-              : ListView.separated(
+      body: Column(
+        children: [
+          FutureBuilder<List<Profile>>(
+            future: service.getAllProfiles(),
+            builder: (context, AsyncSnapshot<List<Profile>> snapshot) {
+              if (snapshot.hasData) {
+                return ListView.separated(
                   separatorBuilder: (BuildContext context, int index) =>
                       const Divider(
                     color: Colors.grey,
                     thickness: 1.0,
                   ),
-                  itemCount: profiles.length,
+                  itemCount: snapshot.data!.length,
                   itemBuilder: (context, index) {
-                    final profile = profiles[index];
+                    final profile = snapshot.data![index];
                     return ListTile(
                       title: Text(profile.name),
                       trailing: Text(profile.memo),
@@ -67,18 +67,27 @@ class HomePage extends StatelessWidget {
                       ),
                       onTap: () => Navigator.of(context).push(
                         MaterialPageRoute(
-                            builder: (context) =>
-                                ProfileDetailWidget(profile.id)),
+                            builder: (context) => ProfileDetailPage(
+                                profile: profile, service: service)),
                       ),
                     );
                   },
-                ),
+                );
+              } else if (snapshot.hasError) {
+                return const Center(child: Text('Error'));
+              } else {
+                return const Center(child: CircularProgressIndicator());
+              }
+            },
+          ),
+        ],
+      ),
 
       floatingActionButton: FloatingActionButton(
         onPressed: () => Navigator.push(
             context,
             MaterialPageRoute(
-              builder: (context) => const AddPersonPage(),
+              builder: (context) => AddPersonPage(service: service),
             )),
         tooltip: 'Add',
         child: const Icon(Icons.add),

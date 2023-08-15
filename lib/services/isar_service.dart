@@ -20,7 +20,7 @@ class IsarService {
 
   Stream<List<Profile>> listenToProfiles() async* {
     final isar = await db;
-    yield* isar.profiles.where().watch(initialReturn: true); // 初回の要素リストを最初に返す
+    yield* isar.profiles.where().watch();
   }
 
   Future<void> clearDb() async {
@@ -33,6 +33,7 @@ class IsarService {
       return await Isar.open(
         [ProfileSchema],
         inspector: true,
+        directory: 'isar', // データベースファイルの保存先
       );
     }
 

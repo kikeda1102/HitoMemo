@@ -9,7 +9,7 @@ class Profile {
   DateTime created;
   DateTime? updated;
   String name;
-  List<byte> imageBytes;
+  List<byte>? imageBytes;
   List<String> personalTags;
   String memo;
 
@@ -17,7 +17,7 @@ class Profile {
   Profile({
     this.updated,
     required this.name,
-    required this.imageBytes,
+    this.imageBytes,
     required this.personalTags,
     required this.memo,
   })  : id = Isar.autoIncrement,

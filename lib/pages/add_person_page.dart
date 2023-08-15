@@ -1,12 +1,31 @@
 import 'package:flutter/material.dart';
-import 'package:isar/isar.dart';
+import 'package:hitomemo/services/isar_service.dart';
 import 'package:hitomemo/models/profile.dart';
 
 // 追加画面
 
 // Person追加画面
 class AddPersonPage extends StatefulWidget {
-  const AddPersonPage({Key? key}) : super(key: key);
+  final IsarService service;
+
+  const AddPersonPage({required this.service, Key? key}) : super(key: key);
+
+  @override
+  State<AddPersonPage> createState() => _AddPersonPageState();
+}
+
+class _AddPersonPageState extends State<AddPersonPage> {
+  Profile newProfile = Profile(
+    name: '',
+    imageBytes: null,
+    personalTags: [],
+    memo: '',
+  );
+
+  List<String> generalTags = ['friend', 'family', 'colleague'];
+  bool isGeneralTagsExpanded = false;
+  final _nameTextController = TextEditingController();
+  final _memoTextController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
@@ -24,19 +43,21 @@ class AddPersonPage extends StatefulWidget {
               // 名前
               Container(
                 padding: const EdgeInsets.only(left: 30, right: 30),
-                child: TextField(
+                child: TextFormField(
                   onChanged: (value) {
-                    newName = value;
-                    ref.read(nameErrorProvider.notifier).revokeError();
+                    newProfile.name = value;
                   },
-                  controller: ref.watch(nameTextControllerProvider),
-                  decoration: InputDecoration(
+                  controller: _nameTextController,
+                  decoration: const InputDecoration(
                     labelText: 'Name*',
-                    border: const UnderlineInputBorder(),
-                    errorText: ref.watch(nameErrorProvider)
-                        ? 'Please enter the name.'
-                        : null,
+                    border: UnderlineInputBorder(),
                   ),
+                  validator: (value) {
+                if (value == null || value.isEmpty) {
+                  return "Please enter the name.";
+                }
+                return null;
+              },
                 ),
               ),
               const SizedBox(height: 20),
@@ -46,8 +67,7 @@ class AddPersonPage extends StatefulWidget {
               Wrap(
                 spacing: 8,
                 runSpacing: -2,
-                children: ref
-                    .watch(newProfileProvider)
+                children: newProfile
                     .personalTags
                     .map((tag) => Chip(label: Text(tag)))
                     .toList(),
@@ -61,9 +81,11 @@ class AddPersonPage extends StatefulWidget {
                 child: ListTile(
                   title: const Text('Choose from general tags'),
                   onTap: () {
-                    generalTags.toggleExpanded(); // generalタグの展開
+                    setState(() {
+                      isGeneralTagsExpanded = !isGeneralTagsExpanded;
+                    });
                   },
-                  trailing: ref.watch(generalTagsProvider).isExpanded
+                  trailing: isGeneralTagsExpanded
                       ? const Icon(Icons.expand_less)
                       : const Icon(Icons.expand_more),
                 ),
@@ -73,20 +95,17 @@ class AddPersonPage extends StatefulWidget {
                 secondChild: Wrap(
                   spacing: 10,
                   runSpacing: -8,
-                  children: GeneralTagsNotifier.generalTags
+                  children: generalTags
                       .map(
                         (tag) => FilterChip(
                           label: Text(tag),
                           onSelected: (isSelected) {
                             // ToggleがTrueの場合は、PersonalTagsからタグを削除
                             if (isSelected) {
-                              ref
-                                  .read(newProfileProvider.notifier)
-                                  .addPersonalTags(newPersonalTags: [tag]);
+                              newProfile.personalTags.remove(tag);
                             } else {
-                              ref
-                                  .read(newProfileProvider.notifier)
-                                  .removePersonalTags(newPersonalTags: [tag]);
+                              // ToggleがFalseの場合は、PersonalTagsにタグを追加
+                              newProfile.personalTags.add(tag);                              
                             }
                             // タグの選択状態をトグル
                             generalTags.toggleTag(tag);
@@ -96,7 +115,7 @@ class AddPersonPage extends StatefulWidget {
                       )
                       .toList(),
                 ),
-                crossFadeState: ref.watch(generalTagsProvider).isExpanded
+                crossFadeState: .isExpanded
                     ? CrossFadeState.showSecond
                     : CrossFadeState.showFirst,
                 duration: const Duration(milliseconds: 200),
@@ -109,9 +128,9 @@ class AddPersonPage extends StatefulWidget {
                 padding: const EdgeInsets.only(left: 30, right: 30),
                 child: TextField(
                   onChanged: (value) {
-                    newMemo = value;
+                    newProfile.memo = value;
                   },
-                  controller: ref.watch(memoTextControllerProvider),
+                  controller: _memoTextController,
                   decoration: const InputDecoration(
                     labelText: 'Memo',
                     border: OutlineInputBorder(),

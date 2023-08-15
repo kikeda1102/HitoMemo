@@ -103,37 +103,37 @@ class HomePage extends StatelessWidget {
         child: const Icon(Icons.add),
       ),
 
-      // bottomNavigationBar: PreferredSize(
-      //   preferredSize: const Size.fromHeight(56),
-      //   child: BottomAppBar(
-      //     // color: Colors.blueGrey,
-      //     child: Row(
-      //       mainAxisAlignment: MainAxisAlignment.spaceAround,
-      //       children: [
-      //         // タグ
-      //         TextButton.icon(
-      //           onPressed: () {},
-      //           icon: const Icon(
-      //             Icons.tag,
-      //             // color: Colors.white,
-      //             // size: 30,
-      //           ),
-      //           label: const Text('Tags'),
-      //         ),
-      //         // 設定
-      //         TextButton.icon(
-      //           onPressed: () {},
-      //           icon: const Icon(
-      //             Icons.settings,
-      //             // color: Colors.white,
-      //             // size: 30,
-      //           ),
-      //           label: const Text('Settings'),
-      //         ),
-      //       ],
-      //     ),
-      //   ),
-      // ),
+      bottomNavigationBar: PreferredSize(
+        preferredSize: const Size.fromHeight(56),
+        child: BottomAppBar(
+          // color: Colors.blueGrey,
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceAround,
+            children: [
+              // タグ
+              TextButton.icon(
+                onPressed: () {},
+                icon: const Icon(
+                  Icons.tag,
+                  // color: Colors.white,
+                  // size: 30,
+                ),
+                label: const Text('Tags'),
+              ),
+              // 設定
+              TextButton.icon(
+                onPressed: () {},
+                icon: const Icon(
+                  Icons.settings,
+                  // color: Colors.white,
+                  // size: 30,
+                ),
+                label: const Text('Settings'),
+              ),
+            ],
+          ),
+        ),
+      ),
     );
   }
 }

@@ -4,7 +4,7 @@ part 'profile.g.dart';
 
 @Collection()
 class Profile {
-  Id id;
+  Id id = Isar.autoIncrement;
 
   DateTime created;
   DateTime? updated;

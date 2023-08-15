@@ -28,8 +28,13 @@ class ProfileDetailPage extends StatelessWidget {
               // 削除ボタン
               ElevatedButton(
                 onPressed: () {
-                  // TODO: 削除機能
-                  Navigator.pop(context);
+                  // 確認ダイアログを表示
+                  showDialog(
+                      context: context,
+                      builder: (context) {
+                        return _deleteDialog(context,
+                            profile: profile, service: service);
+                      });
                 },
                 child: const Text('Delete'),
               ),
@@ -37,4 +42,30 @@ class ProfileDetailPage extends StatelessWidget {
           ),
         ));
   }
+}
+
+// 削除確認ダイアログ
+AlertDialog _deleteDialog(BuildContext context,
+    {required Profile profile, required IsarService service}) {
+  return AlertDialog(
+    title: const Text('Delete'),
+    content: const Text('Are you sure to delete?'),
+    actions: [
+      TextButton(
+        onPressed: () {
+          Navigator.pop(context);
+        },
+        child: const Text('Cancel'),
+      ),
+      TextButton(
+        onPressed: () {
+          service.deleteProfile(profile);
+          // 2つ前のページに戻る
+          int count = 0;
+          Navigator.popUntil(context, (_) => count++ >= 2);
+        },
+        child: const Text('OK'),
+      ),
+    ],
+  );
 }

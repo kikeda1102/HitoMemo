@@ -23,7 +23,7 @@ class _AddPersonPageState extends State<AddPersonPage> {
   final _formKey = GlobalKey<FormState>();
   final _nameTextController = TextEditingController();
   final _memoTextController = TextEditingController();
-  bool _isGeneralTagsExpanded = false;
+  // bool _isGeneralTagsExpanded = false;
 
   @override
   Widget build(BuildContext context) {
@@ -65,6 +65,7 @@ class _AddPersonPageState extends State<AddPersonPage> {
 
                 // personalタグ
                 const Text('Personal tags', style: TextStyle(fontSize: 24)),
+                const SizedBox(height: 20),
                 // 登録されたpersonal tagsを表示
                 Wrap(
                   spacing: 8,
@@ -95,62 +96,47 @@ class _AddPersonPageState extends State<AddPersonPage> {
                 // generalタグ
                 Container(
                   padding: const EdgeInsets.only(left: 30, right: 30),
-                  child: ListTile(
-                    title: const Text('Choose from general tags'),
-                    onTap: () {
-                      setState(() {
-                        _isGeneralTagsExpanded = !_isGeneralTagsExpanded;
-                      });
-                    },
-                    trailing: _isGeneralTagsExpanded
-                        ? const Icon(Icons.expand_less)
-                        : const Icon(Icons.expand_more),
+                  child: const ListTile(
+                    title: Text('Choose from general tags'),
                   ),
                 ),
-                AnimatedCrossFade(
-                  firstChild: const SizedBox(),
-                  secondChild: FutureBuilder<List<GeneralTag>>(
-                    future: widget.service.getAllGeneralTags(),
-                    builder: (context, snapshot) {
-                      if (snapshot.connectionState == ConnectionState.waiting) {
-                        return const CircularProgressIndicator(); // 読み込み中の表示
-                      } else if (snapshot.hasError) {
-                        return Text('Error: ${snapshot.error}');
-                      } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
-                        return const Text('No general tags available');
-                      }
+                FutureBuilder<List<GeneralTag>>(
+                  future: widget.service.getAllGeneralTags(),
+                  builder: (context, snapshot) {
+                    if (snapshot.connectionState == ConnectionState.waiting) {
+                      return const CircularProgressIndicator(); // 読み込み中の表示
+                    } else if (snapshot.hasError) {
+                      return Text('Error: ${snapshot.error}');
+                    } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
+                      return const Text('No general tags available');
+                    }
 
-                      List<GeneralTag> generalTags = snapshot.data!;
-                      List<GeneralTag> toggledTags = [];
+                    List<GeneralTag> generalTags = snapshot.data!;
+                    List<GeneralTag> toggledTags = [];
 
-                      return Wrap(
-                        spacing: 10,
-                        runSpacing: -8,
-                        children: generalTags
-                            .map(
-                              (tag) => FilterChip(
-                                label: Text(tag.title),
-                                onSelected: (isSelected) {
-                                  setState(() {
-                                    if (isSelected) {
-                                      newProfile.personalTags.add(tag.title);
-                                    } else {
-                                      newProfile.personalTags.remove(tag.title);
-                                    }
-                                    toggledTags.add(tag);
-                                  });
-                                },
-                                selected: toggledTags.contains(tag),
-                              ),
-                            )
-                            .toList(),
-                      );
-                    },
-                  ),
-                  crossFadeState: _isGeneralTagsExpanded
-                      ? CrossFadeState.showSecond
-                      : CrossFadeState.showFirst,
-                  duration: const Duration(milliseconds: 200),
+                    return Wrap(
+                      spacing: 10,
+                      runSpacing: -8,
+                      children: generalTags
+                          .map(
+                            (tag) => FilterChip(
+                              label: Text(tag.title),
+                              onSelected: (isSelected) {
+                                setState(() {
+                                  if (isSelected) {
+                                    newProfile.personalTags.add(tag.title);
+                                  } else {
+                                    newProfile.personalTags.remove(tag.title);
+                                  }
+                                  toggledTags.add(tag);
+                                });
+                              },
+                              selected: toggledTags.contains(tag),
+                            ),
+                          )
+                          .toList(),
+                    );
+                  },
                 ),
 
                 const SizedBox(height: 20),

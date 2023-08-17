@@ -52,6 +52,7 @@ class IsarService {
   }
 
   // GeneralTag
+
   // create
   Future<void> addGeneralTag(GeneralTag newGeneralTag) async {
     final isar = await db;
@@ -62,6 +63,16 @@ class IsarService {
   Future<List<GeneralTag>> getAllGeneralTags() async {
     final isar = await db;
     return await isar.generalTags.where().findAll();
+  }
+
+  Stream<List<GeneralTag>> listenToGeneralTags() async* {
+    final isar = await db;
+    yield* isar.generalTags.where().watch(fireImmediately: true);
+  }
+
+  Future<int> getGeneralTagCount() async {
+    final isar = await db;
+    return await isar.generalTags.where().count();
   }
 
   // delete

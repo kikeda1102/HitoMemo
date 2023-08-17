@@ -36,7 +36,7 @@ class HomePage extends StatelessWidget {
               child: StreamBuilder<List<Profile>>(
                 stream: service.listenToProfiles(),
                 builder: (context, AsyncSnapshot<List<Profile>> snapshot) {
-                  if (snapshot.hasData) {
+                  if (snapshot.data != null && snapshot.data!.isNotEmpty) {
                     return ListView.separated(
                       separatorBuilder: (BuildContext context, int index) =>
                           const Divider(
@@ -82,7 +82,7 @@ class HomePage extends StatelessWidget {
                   } else {
                     return const Center(
                         child: Text(
-                      'Add a new person by + button.',
+                      'Add a new person by tapping the + button.',
                       style: TextStyle(fontSize: 15),
                     ));
                   }
@@ -104,33 +104,49 @@ class HomePage extends StatelessWidget {
       ),
 
       bottomNavigationBar: PreferredSize(
-        preferredSize: const Size.fromHeight(56),
+        preferredSize: const Size.fromHeight(20),
         child: BottomAppBar(
           // color: Colors.blueGrey,
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceAround,
-            children: [
-              // タグ
-              TextButton.icon(
-                onPressed: () {},
-                icon: const Icon(
-                  Icons.tag,
-                  // color: Colors.white,
-                  // size: 30,
+          child: SizedBox(
+            height: 50,
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceAround,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                // タグ
+                TextButton(
+                  onPressed: () {},
+                  child: const Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      SizedBox(height: 4),
+                      Icon(
+                        Icons.tag,
+                        // color: Colors.white,
+                        // size: 30,
+                      ),
+                      Text('Tags', style: TextStyle(fontSize: 10)),
+                    ],
+                  ),
                 ),
-                label: const Text('Tags'),
-              ),
-              // 設定
-              TextButton.icon(
-                onPressed: () {},
-                icon: const Icon(
-                  Icons.settings,
-                  // color: Colors.white,
-                  // size: 30,
+                // 設定
+                TextButton(
+                  onPressed: () {},
+                  child: const Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      SizedBox(height: 4),
+                      Icon(
+                        Icons.settings,
+                        // color: Colors.white,
+                        // size: 30,
+                      ),
+                      Text('Settings', style: TextStyle(fontSize: 10)),
+                    ],
+                  ),
                 ),
-                label: const Text('Settings'),
-              ),
-            ],
+              ],
+            ),
           ),
         ),
       ),

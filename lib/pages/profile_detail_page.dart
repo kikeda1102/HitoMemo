@@ -17,28 +17,60 @@ class ProfileDetailPage extends StatelessWidget {
         appBar: AppBar(
           title: Text(profile.name),
         ),
-        body: Padding(
-          padding: const EdgeInsets.all(16),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(profile.name),
-              Text(profile.memo),
-              const SizedBox(height: 16),
-              // 削除ボタン
-              ElevatedButton(
-                onPressed: () {
-                  // 確認ダイアログを表示
-                  showDialog(
-                      context: context,
-                      builder: (context) {
-                        return _deleteDialog(context,
-                            profile: profile, service: service);
-                      });
-                },
-                child: const Text('Delete'),
-              ),
-            ],
+        body: Center(
+          child: Padding(
+            padding: const EdgeInsets.all(20),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                const SizedBox(height: 20),
+                Text(profile.name, style: const TextStyle(fontSize: 25)),
+                const SizedBox(height: 16),
+                // タグ
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Wrap(
+                      spacing: 4,
+                      runSpacing: -12,
+                      children: profile.personalTags
+                          .map((tag) => Chip(
+                                label: Text(tag),
+                              ))
+                          .toList(),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 16),
+                Text(profile.memo),
+                const SizedBox(height: 40),
+                // 編集ボタン
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  children: [
+                    ElevatedButton(
+                      onPressed: () {
+                        // TODO: 編集画面に遷移
+                      },
+                      child: const Text('Edit'),
+                    ),
+                    ElevatedButton(
+                      onPressed: () {
+                        // 確認ダイアログを表示
+                        showDialog(
+                            context: context,
+                            builder: (context) {
+                              return _deleteDialog(context,
+                                  profile: profile, service: service);
+                            });
+                      },
+                      child: const Text('Delete'),
+                    ),
+                  ],
+                ),
+                // 削除ボタン
+              ],
+            ),
           ),
         ));
   }

@@ -3,8 +3,7 @@ import 'package:hitomemo/pages/home_page.dart';
 import 'package:hitomemo/models/general_tag.dart';
 import 'package:hitomemo/services/isar_service.dart';
 
-// hitomemo
-// 初対面の人のプロフィールを記録し一覧表示できるメモアプリ
+// hitomemo 初対面の人のプロフィールを記録するメモアプリ
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   // IsarServiceのインスタンスを生成
@@ -16,7 +15,10 @@ void main() async {
 }
 
 Future<void> initializeDb(IsarService service) async {
-  await service.addGeneralTag(GeneralTag(title: 'Friend'));
+  // generalTagがない場合は初期データを追加する
+  if (await service.getGeneralTagCount() == 0) {
+    await service.addGeneralTag(GeneralTag(title: 'Friend'));
+  }
 }
 
 class MyApp extends StatelessWidget {

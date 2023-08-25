@@ -18,11 +18,11 @@ class HomePage extends StatelessWidget {
           IconButton(
             icon: const Icon(Icons.search),
             onPressed: () {
-              // TODO: 検索機能
-              // showSearch(
-              //   context: context,
-              //   delegate: PersonSearchDelegate(personList.personList),
-              // );
+              // 検索
+              showSearch(
+                context: context,
+                delegate: ProfileSearchDelegate(service: service),
+              );
             },
           ),
         ],
@@ -106,7 +106,6 @@ class HomePage extends StatelessWidget {
       bottomNavigationBar: PreferredSize(
         preferredSize: const Size.fromHeight(20),
         child: BottomAppBar(
-          // color: Colors.blueGrey,
           child: SizedBox(
             height: 50,
             child: Row(
@@ -149,6 +148,194 @@ class HomePage extends StatelessWidget {
             ),
           ),
         ),
+      ),
+    );
+  }
+}
+
+// 検索機能
+class ProfileSearchDelegate extends SearchDelegate<Profile> {
+  final IsarService service;
+  ProfileSearchDelegate({required this.service});
+
+  // 色の設定
+  // @override
+  // ThemeData appBarTheme(BuildContext context) {
+  //   return Theme.of(context).copyWith(
+  //     primaryColor: Colors.blueGrey,
+  //     inputDecorationTheme: const InputDecorationTheme(
+  //       hintStyle: TextStyle(color: Colors.white),
+  //     ),
+  //   );
+  // }
+
+  @override
+  List<Widget> buildActions(BuildContext context) {
+    return [
+      // 検索クエリをクリアするボタン
+      IconButton(
+        icon: const Icon(Icons.clear),
+        tooltip: 'Clear',
+        onPressed: () {
+          query = '';
+          showSuggestions(context);
+        },
+      ),
+    ];
+  }
+
+  // 検索バーの左側の戻るボタン
+  @override
+  Widget buildLeading(BuildContext context) {
+    return IconButton(
+      icon: const Icon(Icons.arrow_back),
+      tooltip: 'Back',
+      onPressed: () => close(
+          context,
+          Profile(
+            name: '',
+            memo: '',
+            personalTags: [],
+          )),
+    );
+  }
+
+  // 検索結果の表示
+  @override
+  Widget buildResults(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.all(8.0),
+      child: StreamBuilder<List<Profile>>(
+        stream: service.listenToProfiles(),
+        builder: (context, AsyncSnapshot<List<Profile>> snapshot) {
+          if (snapshot.data != null && snapshot.data!.isNotEmpty) {
+            final results = snapshot.data!
+                .where((profile) =>
+                    profile.name.toLowerCase().contains(query.toLowerCase()) ||
+                    profile.personalTags.any((tag) =>
+                        tag.toLowerCase().contains(query.toLowerCase())) ||
+                    profile.memo.toLowerCase().contains(query.toLowerCase()))
+                .toList();
+            return ListView.separated(
+              separatorBuilder: (BuildContext context, int index) =>
+                  const Divider(
+                color: Colors.grey,
+                thickness: 1.0,
+              ),
+              itemCount: results.length,
+              itemBuilder: (context, index) {
+                final profile = results[index];
+                return ListTile(
+                  title: Text(profile.name),
+                  trailing: Text(profile.memo),
+                  // タグ
+                  subtitle: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      if (profile.personalTags.isNotEmpty)
+                        Wrap(
+                          spacing: 4,
+                          runSpacing: -12,
+                          children: profile.personalTags
+                              .map((tag) => Chip(
+                                    label: Text(
+                                      tag,
+                                      style: const TextStyle(fontSize: 12),
+                                    ),
+                                  ))
+                              .toList(),
+                        ),
+                    ],
+                  ),
+                  onTap: () => Navigator.of(context).push(
+                    MaterialPageRoute(
+                      builder: (context) =>
+                          ProfileDetailPage(profile: profile, service: service),
+                    ),
+                  ),
+                );
+              },
+            );
+          } else if (snapshot.hasError) {
+            return const Center(child: Text('Error occurred'));
+          } else {
+            return const Center(
+                child: Text(
+              'Add a new person by tapping the + button.',
+              style: TextStyle(fontSize: 15),
+            ));
+          }
+        },
+      ),
+    );
+  }
+
+  // 検索候補の表示
+  @override
+  Widget buildSuggestions(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.all(8.0),
+      child: StreamBuilder<List<Profile>>(
+        stream: service.listenToProfiles(),
+        builder: (context, AsyncSnapshot<List<Profile>> snapshot) {
+          if (snapshot.data != null && snapshot.data!.isNotEmpty) {
+            final results = snapshot.data!
+                .where((profile) =>
+                    profile.name.toLowerCase().contains(query.toLowerCase()) ||
+                    profile.personalTags.any((tag) =>
+                        tag.toLowerCase().contains(query.toLowerCase())) ||
+                    profile.memo.toLowerCase().contains(query.toLowerCase()))
+                .toList();
+            return ListView.separated(
+              separatorBuilder: (BuildContext context, int index) =>
+                  const Divider(
+                color: Colors.grey,
+                thickness: 1.0,
+              ),
+              itemCount: results.length,
+              itemBuilder: (context, index) {
+                final profile = results[index];
+                return ListTile(
+                  title: Text(profile.name),
+                  trailing: Text(profile.memo),
+                  // タグ
+                  subtitle: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      if (profile.personalTags.isNotEmpty)
+                        Wrap(
+                          spacing: 4,
+                          runSpacing: -12,
+                          children: profile.personalTags
+                              .map((tag) => Chip(
+                                    label: Text(
+                                      tag,
+                                      style: const TextStyle(fontSize: 12),
+                                    ),
+                                  ))
+                              .toList(),
+                        ),
+                    ],
+                  ),
+                  onTap: () => Navigator.of(context).push(
+                    MaterialPageRoute(
+                      builder: (context) =>
+                          ProfileDetailPage(profile: profile, service: service),
+                    ),
+                  ),
+                );
+              },
+            );
+          } else if (snapshot.hasError) {
+            return const Center(child: Text('Error occurred'));
+          } else {
+            return const Center(
+                child: Text(
+              'Add a new person by tapping the + button.',
+              style: TextStyle(fontSize: 15),
+            ));
+          }
+        },
       ),
     );
   }

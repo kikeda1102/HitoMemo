@@ -3,29 +3,85 @@ import 'package:hitomemo/models/profile.dart';
 import 'package:hitomemo/services/isar_service.dart';
 
 // Profile Detail Page
-class ProfileDetailPage extends StatelessWidget {
+// 編集も遷移なしで行える
+
+class ProfileDetailPage extends StatefulWidget {
   final Profile profile;
   final IsarService service;
-
   const ProfileDetailPage(
-      {Key? key, required this.profile, required this.service})
-      : super(key: key);
+      {super.key, required this.profile, required this.service});
 
+  @override
+  State<ProfileDetailPage> createState() => _ProfileDetailPageState();
+}
+
+class _ProfileDetailPageState extends State<ProfileDetailPage> {
+  String? newName;
+  String? newMemo;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
-          title: Text(profile.name),
+          title: Text(widget.profile.name),
         ),
         body: Center(
           child: Padding(
-            padding: const EdgeInsets.all(20),
+            padding: const EdgeInsets.all(30),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
                 const SizedBox(height: 20),
-                Text(profile.name, style: const TextStyle(fontSize: 25)),
+                // 名前
+                TextFormField(
+                  onChanged: (value) {
+                    newName = value;
+                    widget.profile.name = newName!;
+                    // 更新実行
+                    widget.service.updateProfile(widget.profile);
+                  },
+                  controller: TextEditingController(text: widget.profile.name),
+                  decoration: const InputDecoration(
+                    // labelText: 'Name',
+                    border: UnderlineInputBorder(),
+                  ),
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return "Please enter the name.";
+                    }
+                    return null;
+                  },
+                  maxLength: 20, // 入力可能な文字数
+                ),
+
                 const SizedBox(height: 16),
+
+                // Memo
+                TextFormField(
+                  onChanged: (value) {
+                    newMemo = value;
+                    widget.profile.memo = newMemo!;
+                    // 更新実行
+                    widget.service.updateProfile(widget.profile);
+                  },
+                  maxLines: 10,
+                  keyboardType: TextInputType.multiline,
+                  controller: TextEditingController(text: widget.profile.memo),
+                  decoration: const InputDecoration(
+                    // labelText: 'Memo',
+                    border: InputBorder.none,
+                    // border: OutlineInputBorder(),
+                  ),
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return "Please enter the memo.";
+                    }
+                    return null;
+                  },
+                  maxLength: 500, // 入力可能な文字数
+                ),
+
+                const SizedBox(height: 16),
+
                 // タグ
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -33,7 +89,7 @@ class ProfileDetailPage extends StatelessWidget {
                     Wrap(
                       spacing: 4,
                       runSpacing: -12,
-                      children: profile.personalTags
+                      children: widget.profile.personalTags
                           .map((tag) => Chip(
                                 label: Text(tag),
                               ))
@@ -41,19 +97,28 @@ class ProfileDetailPage extends StatelessWidget {
                     ),
                   ],
                 ),
-                const SizedBox(height: 16),
-                Text(profile.memo),
-                const SizedBox(height: 40),
-                // 編集ボタン
+
+                const SizedBox(height: 50),
+
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   children: [
-                    ElevatedButton(
-                      onPressed: () {
-                        // TODO: 編集画面に遷移
-                      },
-                      child: const Text('Edit'),
-                    ),
+                    // 更新ボタン
+                    // ElevatedButton(
+                    //   onPressed: () {
+                    //     // 更新を実行
+                    //     if (newName != null) {
+                    //       widget.profile.name = newName!;
+                    //     }
+                    //     if (newMemo != null) {
+                    //       widget.profile.memo = newMemo!;
+                    //     }
+                    //     widget.service.updateProfile(widget.profile);
+                    //     Navigator.pop(context);
+                    //   },
+                    //   child: const Text('Update'),
+                    // ),
+                    // 削除ボタン
                     ElevatedButton(
                       onPressed: () {
                         // 確認ダイアログを表示
@@ -61,14 +126,14 @@ class ProfileDetailPage extends StatelessWidget {
                             context: context,
                             builder: (context) {
                               return _deleteDialog(context,
-                                  profile: profile, service: service);
+                                  profile: widget.profile,
+                                  service: widget.service);
                             });
                       },
                       child: const Text('Delete'),
                     ),
                   ],
                 ),
-                // 削除ボタン
               ],
             ),
           ),
@@ -87,6 +152,9 @@ AlertDialog _deleteDialog(BuildContext context,
         onPressed: () {
           Navigator.pop(context);
         },
+        // 色
+        style: TextButton.styleFrom(
+            backgroundColor: Colors.grey, foregroundColor: Colors.white),
         child: const Text('Cancel'),
       ),
       TextButton(
@@ -96,7 +164,10 @@ AlertDialog _deleteDialog(BuildContext context,
           int count = 0;
           Navigator.popUntil(context, (_) => count++ >= 2);
         },
-        child: const Text('OK'),
+        // 色を赤に
+        style: TextButton.styleFrom(
+            backgroundColor: Colors.red, foregroundColor: Colors.white),
+        child: const Text('Delete'),
       ),
     ],
   );

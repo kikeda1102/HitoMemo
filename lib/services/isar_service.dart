@@ -45,6 +45,12 @@ class IsarService {
     yield* isar.profiles.where().watch(fireImmediately: true); // 初回の要素リストを最初に返す
   }
 
+  // update
+  Future<void> updateProfile(Profile profile) async {
+    final isar = await db;
+    await isar.writeTxn(() => isar.profiles.put(profile));
+  }
+
   // delete
   Future<void> deleteProfile(Profile profile) async {
     final isar = await db;

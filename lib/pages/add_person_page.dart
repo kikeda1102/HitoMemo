@@ -23,7 +23,6 @@ class _AddPersonPageState extends State<AddPersonPage> {
   final _formKey = GlobalKey<FormState>();
   final _nameTextController = TextEditingController();
   final _memoTextController = TextEditingController();
-  // bool _isGeneralTagsExpanded = false;
 
   @override
   Widget build(BuildContext context) {

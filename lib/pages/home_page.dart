@@ -156,18 +156,21 @@ class HomePage extends StatelessWidget {
 // 検索機能
 class ProfileSearchDelegate extends SearchDelegate<Profile> {
   final IsarService service;
-  ProfileSearchDelegate({required this.service});
+  // final TextStyle searchFieldStyle = const TextStyle(fontSize: 15);
+  ProfileSearchDelegate(
+      {required this.service,
+      super.searchFieldStyle = const TextStyle(color: Colors.white)});
 
   // 色の設定
-  // @override
-  // ThemeData appBarTheme(BuildContext context) {
-  //   return Theme.of(context).copyWith(
-  //     primaryColor: Colors.blueGrey,
-  //     inputDecorationTheme: const InputDecorationTheme(
-  //       hintStyle: TextStyle(color: Colors.white),
-  //     ),
-  //   );
-  // }
+  @override
+  ThemeData appBarTheme(BuildContext context) {
+    return Theme.of(context).copyWith(
+      primaryColor: Colors.blueGrey,
+      inputDecorationTheme: InputDecorationTheme(
+        hintStyle: TextStyle(color: Colors.white.withOpacity(0.9)),
+      ),
+    );
+  }
 
   @override
   List<Widget> buildActions(BuildContext context) {

@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:hitomemo/services/isar_service.dart';
+// import 'package:hitomemo/services/isar_service.dart';
 
 // Settings Page
 

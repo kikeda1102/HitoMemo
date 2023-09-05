@@ -17,8 +17,13 @@ const GeneralTagSchema = CollectionSchema(
   name: r'GeneralTag',
   id: -8314435717824953522,
   properties: {
-    r'title': PropertySchema(
+    r'hashCode': PropertySchema(
       id: 0,
+      name: r'hashCode',
+      type: IsarType.long,
+    ),
+    r'title': PropertySchema(
+      id: 1,
       name: r'title',
       type: IsarType.string,
     )
@@ -53,7 +58,8 @@ void _generalTagSerialize(
   List<int> offsets,
   Map<Type, List<int>> allOffsets,
 ) {
-  writer.writeString(offsets[0], object.title);
+  writer.writeLong(offsets[0], object.hashCode);
+  writer.writeString(offsets[1], object.title);
 }
 
 GeneralTag _generalTagDeserialize(
@@ -63,7 +69,7 @@ GeneralTag _generalTagDeserialize(
   Map<Type, List<int>> allOffsets,
 ) {
   final object = GeneralTag(
-    title: reader.readString(offsets[0]),
+    title: reader.readString(offsets[1]),
   );
   object.id = id;
   return object;
@@ -77,6 +83,8 @@ P _generalTagDeserializeProp<P>(
 ) {
   switch (propertyId) {
     case 0:
+      return (reader.readLong(offset)) as P;
+    case 1:
       return (reader.readString(offset)) as P;
     default:
       throw IsarError('Unknown property with id $propertyId');
@@ -174,6 +182,60 @@ extension GeneralTagQueryWhere
 
 extension GeneralTagQueryFilter
     on QueryBuilder<GeneralTag, GeneralTag, QFilterCondition> {
+  QueryBuilder<GeneralTag, GeneralTag, QAfterFilterCondition> hashCodeEqualTo(
+      int value) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'hashCode',
+        value: value,
+      ));
+    });
+  }
+
+  QueryBuilder<GeneralTag, GeneralTag, QAfterFilterCondition>
+      hashCodeGreaterThan(
+    int value, {
+    bool include = false,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.greaterThan(
+        include: include,
+        property: r'hashCode',
+        value: value,
+      ));
+    });
+  }
+
+  QueryBuilder<GeneralTag, GeneralTag, QAfterFilterCondition> hashCodeLessThan(
+    int value, {
+    bool include = false,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.lessThan(
+        include: include,
+        property: r'hashCode',
+        value: value,
+      ));
+    });
+  }
+
+  QueryBuilder<GeneralTag, GeneralTag, QAfterFilterCondition> hashCodeBetween(
+    int lower,
+    int upper, {
+    bool includeLower = true,
+    bool includeUpper = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.between(
+        property: r'hashCode',
+        lower: lower,
+        includeLower: includeLower,
+        upper: upper,
+        includeUpper: includeUpper,
+      ));
+    });
+  }
+
   QueryBuilder<GeneralTag, GeneralTag, QAfterFilterCondition> idEqualTo(
       Id value) {
     return QueryBuilder.apply(this, (query) {
@@ -367,6 +429,18 @@ extension GeneralTagQueryLinks
 
 extension GeneralTagQuerySortBy
     on QueryBuilder<GeneralTag, GeneralTag, QSortBy> {
+  QueryBuilder<GeneralTag, GeneralTag, QAfterSortBy> sortByHashCode() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'hashCode', Sort.asc);
+    });
+  }
+
+  QueryBuilder<GeneralTag, GeneralTag, QAfterSortBy> sortByHashCodeDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'hashCode', Sort.desc);
+    });
+  }
+
   QueryBuilder<GeneralTag, GeneralTag, QAfterSortBy> sortByTitle() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'title', Sort.asc);
@@ -382,6 +456,18 @@ extension GeneralTagQuerySortBy
 
 extension GeneralTagQuerySortThenBy
     on QueryBuilder<GeneralTag, GeneralTag, QSortThenBy> {
+  QueryBuilder<GeneralTag, GeneralTag, QAfterSortBy> thenByHashCode() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'hashCode', Sort.asc);
+    });
+  }
+
+  QueryBuilder<GeneralTag, GeneralTag, QAfterSortBy> thenByHashCodeDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'hashCode', Sort.desc);
+    });
+  }
+
   QueryBuilder<GeneralTag, GeneralTag, QAfterSortBy> thenById() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'id', Sort.asc);
@@ -409,6 +495,12 @@ extension GeneralTagQuerySortThenBy
 
 extension GeneralTagQueryWhereDistinct
     on QueryBuilder<GeneralTag, GeneralTag, QDistinct> {
+  QueryBuilder<GeneralTag, GeneralTag, QDistinct> distinctByHashCode() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addDistinctBy(r'hashCode');
+    });
+  }
+
   QueryBuilder<GeneralTag, GeneralTag, QDistinct> distinctByTitle(
       {bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
@@ -422,6 +514,12 @@ extension GeneralTagQueryProperty
   QueryBuilder<GeneralTag, int, QQueryOperations> idProperty() {
     return QueryBuilder.apply(this, (query) {
       return query.addPropertyName(r'id');
+    });
+  }
+
+  QueryBuilder<GeneralTag, int, QQueryOperations> hashCodeProperty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addPropertyName(r'hashCode');
     });
   }
 

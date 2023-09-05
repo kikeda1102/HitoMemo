@@ -27,7 +27,9 @@ class _TagManagementPageState extends State<TagManagementPage> {
       body: Center(
         child: Column(
           children: [
-            const SizedBox(height: 40),
+            const SizedBox(height: 20),
+            const Text('Tags', style: TextStyle(fontSize: 20)),
+            const SizedBox(height: 20),
             // generalタグ
             FutureBuilder<List<GeneralTag>>(
               future: widget.service.getAllGeneralTags(),
@@ -65,30 +67,6 @@ class _TagManagementPageState extends State<TagManagementPage> {
                 );
               },
             ),
-            // filteredTagsを表示
-            const Text('Filtered Tags', style: TextStyle(fontSize: 20)),
-            Wrap(
-              spacing: 10,
-              runSpacing: -8,
-              children: filteredTags
-                  .map(
-                    (tag) => FilterChip(
-                      label: Text(tag.title),
-                      onSelected: (isSelected) {
-                        setState(() {
-                          if (isSelected) {
-                            // filteredTags.add(tag);
-                          } else {
-                            filteredTags.remove(tag);
-                          }
-                          // toggledTags.add(tag);
-                        });
-                      },
-                      selected: filteredTags.contains(tag),
-                    ),
-                  )
-                  .toList(),
-            ),
             const SizedBox(height: 40),
             const Text('Results', style: TextStyle(fontSize: 20)),
             Expanded(
@@ -99,10 +77,12 @@ class _TagManagementPageState extends State<TagManagementPage> {
                   builder: (context, AsyncSnapshot<List<Profile>> snapshot) {
                     if (snapshot.data != null && snapshot.data!.isNotEmpty) {
                       // タグで絞り込み
-                      // final filteredProfiles = snapshot.data!
-                      //     .where((profile) => profile.personalTags
-                      //         .contains())
-                      //     .toList();
+                      // filteredTagsの全てのタグを含むプロフィールを抽出
+                      final filteredProfiles = snapshot.data!.where((profile) {
+                        return filteredTags.every((tag) {
+                          return profile.personalTags.contains(tag.title);
+                        });
+                      }).toList();
 
                       return ListView.separated(
                         separatorBuilder: (BuildContext context, int index) =>
@@ -110,9 +90,9 @@ class _TagManagementPageState extends State<TagManagementPage> {
                           color: Colors.grey,
                           thickness: 1.0,
                         ),
-                        itemCount: snapshot.data!.length,
+                        itemCount: filteredProfiles.length,
                         itemBuilder: (context, index) {
-                          final profile = snapshot.data![index];
+                          final profile = filteredProfiles[index];
                           return ListTile(
                             title: Text(profile.name),
                             trailing: Text(profile.memo),

@@ -3,6 +3,8 @@ import 'package:hitomemo/pages/add_person_page.dart';
 import 'package:hitomemo/pages/profile_detail_page.dart';
 import 'package:hitomemo/services/isar_service.dart';
 import 'package:hitomemo/models/profile.dart';
+import 'package:hitomemo/pages/tag_management_page.dart';
+import 'package:hitomemo/pages/settings_page.dart';
 
 // ホーム画面
 class HomePage extends StatelessWidget {
@@ -114,7 +116,15 @@ class HomePage extends StatelessWidget {
               children: [
                 // タグ
                 TextButton(
-                  onPressed: () {},
+                  onPressed: () {
+                    // タグ管理画面へ遷移
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) =>
+                              TagManagementPage(service: service),
+                        ));
+                  },
                   child: const Column(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
@@ -130,7 +140,14 @@ class HomePage extends StatelessWidget {
                 ),
                 // 設定
                 TextButton(
-                  onPressed: () {},
+                  onPressed: () {
+                    // 設定画面へ遷移
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => SettingsPage(),
+                        ));
+                  },
                   child: const Column(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [

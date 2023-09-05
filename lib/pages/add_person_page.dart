@@ -70,7 +70,14 @@ class _AddPersonPageState extends State<AddPersonPage> {
                   spacing: 8,
                   runSpacing: -2,
                   children: newProfile.personalTags
-                      .map((tag) => Chip(label: Text(tag)))
+                      .map((tag) => InputChip(
+                            label: Text(tag),
+                            onDeleted: () {
+                              setState(() {
+                                newProfile.personalTags.remove(tag);
+                              });
+                            },
+                          ))
                       .toList(),
                 ),
 
@@ -80,7 +87,10 @@ class _AddPersonPageState extends State<AddPersonPage> {
                   child: TextFormField(
                     onFieldSubmitted: (value) {
                       setState(() {
+                        // personalタグに追加
                         newProfile.personalTags.add(value);
+                        // generalタグにも追加
+                        widget.service.addGeneralTag(GeneralTag(title: value));
                       });
                     },
                     decoration: const InputDecoration(

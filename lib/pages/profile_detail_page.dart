@@ -41,7 +41,7 @@ class _ProfileDetailPageState extends State<ProfileDetailPage> {
                   },
                   controller: TextEditingController(text: widget.profile.name),
                   decoration: const InputDecoration(
-                    // labelText: 'Name',
+                    labelText: 'Name',
                     border: UnderlineInputBorder(),
                   ),
                   validator: (value) {
@@ -67,7 +67,7 @@ class _ProfileDetailPageState extends State<ProfileDetailPage> {
                   keyboardType: TextInputType.multiline,
                   controller: TextEditingController(text: widget.profile.memo),
                   decoration: const InputDecoration(
-                    // labelText: 'Memo',
+                    labelText: 'Memo',
                     border: InputBorder.none,
                     // border: OutlineInputBorder(),
                   ),
@@ -83,6 +83,8 @@ class _ProfileDetailPageState extends State<ProfileDetailPage> {
                 const SizedBox(height: 16),
 
                 // タグ
+                const Text('Tags', style: TextStyle(fontSize: 20)),
+                const SizedBox(height: 20),
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
@@ -90,8 +92,16 @@ class _ProfileDetailPageState extends State<ProfileDetailPage> {
                       spacing: 4,
                       runSpacing: -12,
                       children: widget.profile.personalTags
-                          .map((tag) => Chip(
+                          .map((tag) => InputChip(
                                 label: Text(tag),
+                                onDeleted: () {
+                                  setState(() {
+                                    widget.profile.personalTags.remove(tag);
+                                    // 更新実行
+                                    widget.service
+                                        .updateProfile(widget.profile);
+                                  });
+                                },
                               ))
                           .toList(),
                     ),

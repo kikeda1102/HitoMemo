@@ -15,7 +15,7 @@ class TagManagementPage extends StatefulWidget {
 }
 
 class _TagManagementPageState extends State<TagManagementPage> {
-  // 絞り込みするタグ
+  // 絞り込み検索用
   List<GeneralTag> filteredTags = [];
 
   @override
@@ -28,7 +28,25 @@ class _TagManagementPageState extends State<TagManagementPage> {
         child: Column(
           children: [
             const SizedBox(height: 20),
-            const Text('Tags', style: TextStyle(fontSize: 20)),
+            // ユーザー入力によるタグ作成と登録
+            Container(
+              padding: const EdgeInsets.only(left: 30, right: 30),
+              child: TextFormField(
+                onFieldSubmitted: (value) {
+                  setState(() {
+                    // generalタグにも追加
+                    widget.service.addGeneralTag(GeneralTag(title: value));
+                  });
+                },
+                decoration: const InputDecoration(
+                  labelText: 'Create new tag',
+                  border: UnderlineInputBorder(),
+                ),
+              ),
+            ),
+            const SizedBox(height: 20),
+
+            const Text('Edit / Search by Tags', style: TextStyle(fontSize: 20)),
             const SizedBox(height: 20),
             // generalタグ
             FutureBuilder<List<GeneralTag>>(
@@ -49,7 +67,7 @@ class _TagManagementPageState extends State<TagManagementPage> {
                   runSpacing: -8,
                   children: generalTags
                       .map(
-                        (tag) => FilterChip(
+                        (tag) => InputChip(
                           label: Text(tag.title),
                           onSelected: (isSelected) {
                             setState(() {
@@ -61,6 +79,43 @@ class _TagManagementPageState extends State<TagManagementPage> {
                             });
                           },
                           selected: filteredTags.contains(tag),
+                          onDeleted: () {
+                            setState(() {
+                              // アラートダイアログを出す
+                              showDialog(
+                                context: context,
+                                builder: (context) {
+                                  return AlertDialog(
+                                    title: const Text('Delete this tag?'),
+                                    content: Text(
+                                        'Are you sure to delete "${tag.title}"?'),
+                                    actions: [
+                                      TextButton(
+                                        onPressed: () {
+                                          Navigator.pop(context);
+                                        },
+                                        child: const Text('Cancel'),
+                                      ),
+                                      TextButton(
+                                        onPressed: () {
+                                          // タグを削除
+                                          setState(() {
+                                            widget.service
+                                                .deleteGeneralTag(tag);
+                                          });
+                                          Navigator.pop(context);
+                                        },
+                                        style: TextButton.styleFrom(
+                                            backgroundColor: Colors.red,
+                                            foregroundColor: Colors.white),
+                                        child: const Text('Delete'),
+                                      ),
+                                    ],
+                                  );
+                                },
+                              );
+                            });
+                          },
                         ),
                       )
                       .toList(),

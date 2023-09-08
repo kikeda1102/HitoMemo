@@ -96,6 +96,7 @@ class _ProfileDetailPageState extends State<ProfileDetailPage> {
                                 label: Text(tag),
                                 onDeleted: () {
                                   setState(() {
+                                    print(widget.profile.personalTags);
                                     widget.profile.personalTags.remove(tag);
                                     // 更新実行
                                     widget.service

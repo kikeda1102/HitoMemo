@@ -46,7 +46,7 @@ class _TagManagementPageState extends State<TagManagementPage> {
             ),
             const SizedBox(height: 20),
 
-            const Text('Edit / Search by Tags', style: TextStyle(fontSize: 20)),
+            const Text('Filter by tags', style: TextStyle(fontSize: 20)),
             const SizedBox(height: 20),
             // generalタグ
             FutureBuilder<List<GeneralTag>>(

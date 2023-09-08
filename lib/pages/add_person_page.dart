@@ -23,6 +23,10 @@ class _AddPersonPageState extends State<AddPersonPage> {
   final _formKey = GlobalKey<FormState>();
   final _nameTextController = TextEditingController();
   final _memoTextController = TextEditingController();
+  // State更新メソッド
+  void updateProfile() {
+    setState(() {});
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -81,72 +85,11 @@ class _AddPersonPageState extends State<AddPersonPage> {
                       .toList(),
                 ),
 
-                // ユーザー入力によるタグ作成と登録
-                Container(
-                  padding: const EdgeInsets.only(left: 30, right: 30),
-                  child: TextFormField(
-                    onFieldSubmitted: (value) {
-                      setState(() {
-                        // personalタグに追加
-                        newProfile.personalTags.add(value);
-                        // generalタグにも追加
-                        widget.service.addGeneralTag(GeneralTag(title: value));
-                      });
-                    },
-                    decoration: const InputDecoration(
-                      labelText: 'Create new tag',
-                      border: UnderlineInputBorder(),
-                    ),
-                  ),
-                ),
-
-                const SizedBox(height: 20),
-
-                // generalタグ
-                Container(
-                  padding: const EdgeInsets.only(left: 30, right: 30),
-                  child: const ListTile(
-                    title: Text('Choose from general tags'),
-                  ),
-                ),
-                FutureBuilder<List<GeneralTag>>(
-                  future: widget.service.getAllGeneralTags(),
-                  builder: (context, snapshot) {
-                    if (snapshot.connectionState == ConnectionState.waiting) {
-                      return const CircularProgressIndicator(); // 読み込み中の表示
-                    } else if (snapshot.hasError) {
-                      return Text('Error: ${snapshot.error}');
-                    } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
-                      return const Text('No general tags available');
-                    }
-
-                    List<GeneralTag> generalTags = snapshot.data!;
-                    List<GeneralTag> toggledTags = [];
-
-                    return Wrap(
-                      spacing: 10,
-                      runSpacing: -8,
-                      children: generalTags
-                          .map(
-                            (tag) => FilterChip(
-                              label: Text(tag.title),
-                              onSelected: (isSelected) {
-                                setState(() {
-                                  if (isSelected) {
-                                    newProfile.personalTags.add(tag.title);
-                                  } else {
-                                    newProfile.personalTags.remove(tag.title);
-                                  }
-                                  toggledTags.add(tag);
-                                });
-                              },
-                              selected: toggledTags.contains(tag),
-                            ),
-                          )
-                          .toList(),
-                    );
-                  },
-                ),
+                // タグ追加
+                AddTagWidget(
+                    notifyParent: updateProfile,
+                    service: widget.service,
+                    newProfile: newProfile),
 
                 const SizedBox(height: 20),
 
@@ -186,6 +129,94 @@ class _AddPersonPageState extends State<AddPersonPage> {
           ),
         ),
       ),
+    );
+  }
+}
+
+class AddTagWidget extends StatefulWidget {
+  final Function() notifyParent;
+  final IsarService service;
+  final Profile newProfile;
+  const AddTagWidget(
+      {required this.notifyParent,
+      required this.service,
+      required this.newProfile,
+      super.key});
+
+  @override
+  State<AddTagWidget> createState() => _AddTagWidgetState();
+}
+
+class _AddTagWidgetState extends State<AddTagWidget> {
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      children: [
+        // ユーザー入力によるタグ作成と登録
+        Container(
+          padding: const EdgeInsets.only(left: 30, right: 30),
+          child: TextFormField(
+            onFieldSubmitted: (value) {
+              // personalタグに追加
+              widget.newProfile.personalTags.add(value);
+              // generalタグにも追加
+              widget.service.addGeneralTag(GeneralTag(title: value));
+              widget.notifyParent();
+            },
+            decoration: const InputDecoration(
+              labelText: 'Create new tag',
+              border: UnderlineInputBorder(),
+            ),
+          ),
+        ),
+
+        const SizedBox(height: 20),
+
+        // generalタグ
+        Container(
+          padding: const EdgeInsets.only(left: 30, right: 30),
+          child: const ListTile(
+            title: Text('Choose from general tags'),
+          ),
+        ),
+        FutureBuilder<List<GeneralTag>>(
+          future: widget.service.getAllGeneralTags(),
+          builder: (context, snapshot) {
+            if (snapshot.connectionState == ConnectionState.waiting) {
+              return const CircularProgressIndicator(); // 読み込み中の表示
+            } else if (snapshot.hasError) {
+              return Text('Error: ${snapshot.error}');
+            } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
+              return const Text('No general tags available');
+            }
+
+            List<GeneralTag> generalTags = snapshot.data!;
+            List<GeneralTag> toggledTags = [];
+
+            return Wrap(
+              spacing: 10,
+              runSpacing: -8,
+              children: generalTags
+                  .map(
+                    (tag) => FilterChip(
+                      label: Text(tag.title),
+                      onSelected: (isSelected) {
+                        if (isSelected) {
+                          widget.newProfile.personalTags.add(tag.title);
+                        } else {
+                          widget.newProfile.personalTags.remove(tag.title);
+                        }
+                        toggledTags.add(tag);
+                        widget.notifyParent();
+                      },
+                      selected: toggledTags.contains(tag),
+                    ),
+                  )
+                  .toList(),
+            );
+          },
+        ),
+      ],
     );
   }
 }

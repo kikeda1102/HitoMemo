@@ -82,7 +82,9 @@ class _ProfileDetailPageState extends State<ProfileDetailPage> {
 
                 const SizedBox(height: 16),
 
-                // タグ
+                // 新規タグ追加
+
+                // 既存タグ
                 const Text('Tags', style: TextStyle(fontSize: 20)),
                 const SizedBox(height: 20),
                 Column(
@@ -96,7 +98,7 @@ class _ProfileDetailPageState extends State<ProfileDetailPage> {
                                 label: Text(tag),
                                 onDeleted: () {
                                   setState(() {
-                                    print(widget.profile.personalTags);
+                                    // print(widget.profile.personalTags);
                                     widget.profile.personalTags.remove(tag);
                                     // 更新実行
                                     widget.service

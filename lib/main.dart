@@ -33,8 +33,9 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.blueGrey,
       ),
-      // home: HomePage(service: service),
-      home: const Placeholder(),
+      home: HomePage(service: service),
+      // 変なレコード入れてしまった時用
+      // home: const Placeholder(),
     );
   }
 }

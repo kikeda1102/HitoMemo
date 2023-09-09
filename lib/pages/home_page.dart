@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:url_launcher/link.dart';
 import 'package:hitomemo/pages/add_person_page.dart';
 import 'package:hitomemo/pages/profile_detail_page.dart';
 import 'package:hitomemo/services/isar_service.dart';
 import 'package:hitomemo/models/profile.dart';
 import 'package:hitomemo/pages/tag_management_page.dart';
-import 'package:hitomemo/pages/settings_page.dart';
+// import 'package:hitomemo/pages/settings_page.dart';
 
 // ホーム画面
 class HomePage extends StatelessWidget {
@@ -14,6 +15,41 @@ class HomePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      drawer: Drawer(
+          child: ListView(
+        children: [
+          const ListTile(
+            title: Padding(
+              padding: EdgeInsets.all(10.0),
+              child: Column(
+                children: [
+                  Text('HitoMemo'),
+                  SizedBox(
+                    height: 10,
+                  ),
+                  Text('Version: 1.0.0'),
+                ],
+              ),
+            ),
+          ),
+          const SizedBox(
+            height: 20,
+          ),
+          Link(
+            // 開きたいWebページのURLを指定
+            uri: Uri.parse(
+                'https://kikeda1102.github.io/tt_scoreboard_LP/'), // GitHub Pages
+            target: LinkTarget.self, // 独立したブラウザとして開く
+            builder: (BuildContext ctx, FollowLink? openLink) {
+              return TextButton.icon(
+                onPressed: openLink,
+                label: const Text('Privacy Policy'),
+                icon: const Icon(Icons.open_in_new),
+              );
+            },
+          ),
+        ],
+      )),
       appBar: AppBar(
         title: const Text('People List'),
         actions: [
@@ -95,15 +131,16 @@ class HomePage extends StatelessWidget {
         ],
       ),
 
-      floatingActionButton: FloatingActionButton(
-        onPressed: () => Navigator.push(
-            context,
-            MaterialPageRoute(
-              builder: (context) => AddPersonPage(service: service),
-            )),
-        tooltip: 'Add',
-        child: const Icon(Icons.add),
-      ),
+      // create
+      // floatingActionButton: FloatingActionButton(
+      //   onPressed: () => Navigator.push(
+      //       context,
+      //       MaterialPageRoute(
+      //         builder: (context) => AddPersonPage(service: service),
+      //       )),
+      //   tooltip: 'Add',
+      //   child: const Icon(Icons.add),
+      // ),
 
       bottomNavigationBar: PreferredSize(
         preferredSize: const Size.fromHeight(20),
@@ -138,14 +175,17 @@ class HomePage extends StatelessWidget {
                     ],
                   ),
                 ),
-                // 設定
+
+                // 新規追加
                 TextButton(
                   onPressed: () {
                     // 設定画面へ遷移
                     Navigator.push(
                         context,
                         MaterialPageRoute(
-                          builder: (context) => SettingsPage(),
+                          builder: (context) => AddPersonPage(
+                            service: service,
+                          ),
                         ));
                   },
                   child: const Column(
@@ -153,14 +193,38 @@ class HomePage extends StatelessWidget {
                     children: [
                       SizedBox(height: 4),
                       Icon(
-                        Icons.settings,
+                        Icons.add_circle,
                         // color: Colors.white,
                         // size: 30,
                       ),
-                      Text('Settings', style: TextStyle(fontSize: 10)),
+                      Text('New', style: TextStyle(fontSize: 10)),
                     ],
                   ),
                 ),
+
+                // メニュー
+                // TextButton(
+                //   onPressed: () {
+                //     // 設定画面へ遷移
+                //     Navigator.push(
+                //         context,
+                //         MaterialPageRoute(
+                //           builder: (context) => SettingsPage(),
+                //         ));
+                //   },
+                //   child: const Column(
+                //     mainAxisAlignment: MainAxisAlignment.center,
+                //     children: [
+                //       SizedBox(height: 4),
+                //       Icon(
+                //         Icons.menu,
+                //         // color: Colors.white,
+                //         // size: 30,
+                //       ),
+                //       Text('Menu', style: TextStyle(fontSize: 10)),
+                //     ],
+                //   ),
+                // ),
               ],
             ),
           ),

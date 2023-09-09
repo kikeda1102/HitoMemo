@@ -222,6 +222,9 @@ class _AddTagWidgetState extends State<AddTagWidget> {
             );
           },
         ),
+        const SizedBox(
+          height: 20,
+        ),
       ],
     );
   }

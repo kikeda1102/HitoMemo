@@ -2,6 +2,7 @@ import 'package:isar/isar.dart';
 import 'package:hitomemo/models/profile.dart';
 import 'package:hitomemo/models/general_tag.dart';
 import 'package:path_provider/path_provider.dart';
+import 'dart:async';
 
 class IsarService {
   late Future<Isar> db;
@@ -62,6 +63,9 @@ class IsarService {
   // create
   Future<void> addGeneralTag(GeneralTag newGeneralTag) async {
     final isar = await db;
+    // 重複がないか判定
+
+    // 重複がなければ書き込み
     isar.writeTxnSync<int>(() => isar.generalTags.putSync(newGeneralTag));
   }
 

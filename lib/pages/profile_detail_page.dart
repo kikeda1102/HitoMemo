@@ -173,7 +173,7 @@ AlertDialog _deleteDialog(BuildContext context,
     {required Profile profile, required IsarService service}) {
   return AlertDialog(
     title: const Text('Delete'),
-    content: const Text('Are you sure to delete?'),
+    content: const Text('Are you sure to delete this profile?'),
     actions: [
       TextButton(
         onPressed: () {

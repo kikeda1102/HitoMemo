@@ -146,7 +146,7 @@ class HomePage extends StatelessWidget {
         preferredSize: const Size.fromHeight(20),
         child: BottomAppBar(
           child: SizedBox(
-            height: 50,
+            height: 60,
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceAround,
               crossAxisAlignment: CrossAxisAlignment.center,

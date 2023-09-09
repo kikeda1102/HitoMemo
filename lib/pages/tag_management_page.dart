@@ -40,7 +40,7 @@ class _TagManagementPageState extends State<TagManagementPage> {
                 } else if (snapshot.hasError) {
                   return Text('Error: ${snapshot.error}');
                 } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
-                  return const Text('No general tags available');
+                  return const Text('No Tags');
                 }
 
                 List<GeneralTag> generalTags = snapshot.data!;
@@ -124,7 +124,7 @@ class _TagManagementPageState extends State<TagManagementPage> {
             ),
             const SizedBox(height: 40),
 
-            const Text('Results', style: TextStyle(fontSize: 20)),
+            // const Text('Results', style: TextStyle(fontSize: 20)),
             Expanded(
               child: Padding(
                 padding: const EdgeInsets.all(8),
@@ -184,11 +184,7 @@ class _TagManagementPageState extends State<TagManagementPage> {
                     } else if (snapshot.hasError) {
                       return const Center(child: Text('Error occurred'));
                     } else {
-                      return const Center(
-                          child: Text(
-                        'Add a new person by tapping the + button.',
-                        style: TextStyle(fontSize: 15),
-                      ));
+                      return const Center();
                     }
                   },
                 ),

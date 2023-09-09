@@ -33,7 +33,8 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.blueGrey,
       ),
-      home: HomePage(service: service),
+      // home: HomePage(service: service),
+      home: const Placeholder(),
     );
   }
 }

@@ -67,12 +67,12 @@ class _AddPersonPageState extends State<AddPersonPage> {
                 const SizedBox(height: 20),
 
                 // personalタグ
-                const Text('Personal tags', style: TextStyle(fontSize: 24)),
-                const SizedBox(height: 20),
+                // const Text('Personal tags', style: TextStyle(fontSize: 24)),
+                // const SizedBox(height: 20),
                 // 登録されたpersonal tagsを表示
                 Wrap(
-                  spacing: 8,
-                  runSpacing: -2,
+                  spacing: 5,
+                  runSpacing: 5,
                   children: newProfile.personalTags
                       .map((tag) => InputChip(
                             label: Text(tag),
@@ -83,6 +83,10 @@ class _AddPersonPageState extends State<AddPersonPage> {
                             },
                           ))
                       .toList(),
+                ),
+
+                const SizedBox(
+                  height: 20,
                 ),
 
                 // タグ追加
@@ -101,9 +105,10 @@ class _AddPersonPageState extends State<AddPersonPage> {
                       newProfile.memo = value;
                     },
                     controller: _memoTextController,
+                    maxLines: 10,
                     decoration: const InputDecoration(
                       labelText: 'Memo',
-                      border: OutlineInputBorder(),
+                      border: InputBorder.none,
                     ),
                   ),
                 ),
@@ -150,7 +155,8 @@ class AddTagWidget extends StatefulWidget {
 class _AddTagWidgetState extends State<AddTagWidget> {
   @override
   Widget build(BuildContext context) {
-    return Column(
+    return ExpansionTile(
+      title: const Text('Add Tags'),
       children: [
         // ユーザー入力によるタグ作成と登録
         Container(
@@ -194,8 +200,8 @@ class _AddTagWidgetState extends State<AddTagWidget> {
             List<GeneralTag> toggledTags = [];
 
             return Wrap(
-              spacing: 10,
-              runSpacing: -8,
+              spacing: 5,
+              runSpacing: 5,
               children: generalTags
                   .map(
                     (tag) => FilterChip(

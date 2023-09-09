@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:hitomemo/models/profile.dart';
+import 'package:hitomemo/pages/add_person_page.dart';
 import 'package:hitomemo/services/isar_service.dart';
 
 // Profile Detail Page
@@ -18,6 +19,11 @@ class ProfileDetailPage extends StatefulWidget {
 class _ProfileDetailPageState extends State<ProfileDetailPage> {
   String? newName;
   String? newMemo;
+  // State更新メソッド
+  void updateProfile() {
+    setState(() {});
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -27,127 +33,135 @@ class _ProfileDetailPageState extends State<ProfileDetailPage> {
         body: Center(
           child: Padding(
             padding: const EdgeInsets.all(30),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                const SizedBox(height: 20),
-                // 名前
-                TextFormField(
-                  onChanged: (value) {
-                    newName = value;
-                    widget.profile.name = newName!;
-                    // 更新実行
-                    widget.service.updateProfile(widget.profile);
-                  },
-                  controller: TextEditingController(text: widget.profile.name),
-                  decoration: const InputDecoration(
-                    labelText: 'Name',
-                    border: UnderlineInputBorder(),
-                  ),
-                  validator: (value) {
-                    if (value == null || value.isEmpty) {
-                      return "Please enter the name.";
-                    }
-                    return null;
-                  },
-                  maxLength: 20, // 入力可能な文字数
-                ),
-
-                const SizedBox(height: 16),
-
-                // Memo
-                TextFormField(
-                  onChanged: (value) {
-                    newMemo = value;
-                    widget.profile.memo = newMemo!;
-                    // 更新実行
-                    widget.service.updateProfile(widget.profile);
-                  },
-                  maxLines: 10,
-                  keyboardType: TextInputType.multiline,
-                  controller: TextEditingController(text: widget.profile.memo),
-                  decoration: const InputDecoration(
-                    labelText: 'Memo',
-                    border: InputBorder.none,
-                    // border: OutlineInputBorder(),
-                  ),
-                  validator: (value) {
-                    if (value == null || value.isEmpty) {
-                      return "Please enter the memo.";
-                    }
-                    return null;
-                  },
-                  maxLength: 500, // 入力可能な文字数
-                ),
-
-                const SizedBox(height: 16),
-
-                // 新規タグ追加
-
-                // 既存タグ
-                const Text('Tags', style: TextStyle(fontSize: 20)),
-                const SizedBox(height: 20),
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Wrap(
-                      spacing: 4,
-                      runSpacing: -12,
-                      children: widget.profile.personalTags
-                          .map((tag) => InputChip(
-                                label: Text(tag),
-                                onDeleted: () {
-                                  setState(() {
-                                    // print(widget.profile.personalTags);
-                                    widget.profile.personalTags.remove(tag);
-                                    // 更新実行
-                                    widget.service
-                                        .updateProfile(widget.profile);
-                                  });
-                                },
-                              ))
-                          .toList(),
+            child: SingleChildScrollView(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  const SizedBox(height: 20),
+                  // 名前
+                  TextFormField(
+                    onChanged: (value) {
+                      newName = value;
+                      widget.profile.name = newName!;
+                      // 更新実行
+                      widget.service.updateProfile(widget.profile);
+                    },
+                    controller:
+                        TextEditingController(text: widget.profile.name),
+                    decoration: const InputDecoration(
+                      labelText: 'Name',
+                      border: UnderlineInputBorder(),
                     ),
-                  ],
-                ),
+                    validator: (value) {
+                      if (value == null || value.isEmpty) {
+                        return "Please enter the name.";
+                      }
+                      return null;
+                    },
+                    maxLength: 20, // 入力可能な文字数
+                  ),
 
-                const SizedBox(height: 50),
+                  const SizedBox(height: 16),
 
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                  children: [
-                    // 更新ボタン
-                    // ElevatedButton(
-                    //   onPressed: () {
-                    //     // 更新を実行
-                    //     if (newName != null) {
-                    //       widget.profile.name = newName!;
-                    //     }
-                    //     if (newMemo != null) {
-                    //       widget.profile.memo = newMemo!;
-                    //     }
-                    //     widget.service.updateProfile(widget.profile);
-                    //     Navigator.pop(context);
-                    //   },
-                    //   child: const Text('Update'),
-                    // ),
-                    // 削除ボタン
-                    ElevatedButton(
-                      onPressed: () {
-                        // 確認ダイアログを表示
-                        showDialog(
-                            context: context,
-                            builder: (context) {
-                              return _deleteDialog(context,
-                                  profile: widget.profile,
-                                  service: widget.service);
-                            });
-                      },
-                      child: const Text('Delete'),
+                  // Memo
+                  TextFormField(
+                    onChanged: (value) {
+                      newMemo = value;
+                      widget.profile.memo = newMemo!;
+                      // 更新実行
+                      widget.service.updateProfile(widget.profile);
+                    },
+                    maxLines: 10,
+                    keyboardType: TextInputType.multiline,
+                    controller:
+                        TextEditingController(text: widget.profile.memo),
+                    decoration: const InputDecoration(
+                      labelText: 'Memo',
+                      border: InputBorder.none,
+                      // border: OutlineInputBorder(),
                     ),
-                  ],
-                ),
-              ],
+                    validator: (value) {
+                      if (value == null || value.isEmpty) {
+                        return "Please enter the memo.";
+                      }
+                      return null;
+                    },
+                    maxLength: 500, // 入力可能な文字数
+                  ),
+
+                  const SizedBox(height: 16),
+
+                  // 新規タグ追加
+
+                  // 既存タグ
+                  const Text('Tags', style: TextStyle(fontSize: 20)),
+                  const SizedBox(height: 20),
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Wrap(
+                        spacing: 5,
+                        runSpacing: 5,
+                        children: widget.profile.personalTags
+                            .map((tag) => InputChip(
+                                  label: Text(tag),
+                                  onDeleted: () {
+                                    setState(() {
+                                      widget.profile.personalTags.remove(tag);
+                                      // 更新実行
+                                      widget.service
+                                          .updateProfile(widget.profile);
+                                    });
+                                  },
+                                ))
+                            .toList(),
+                      ),
+                    ],
+                  ),
+
+                  const SizedBox(height: 50),
+
+                  AddTagWidget(
+                      notifyParent: updateProfile,
+                      service: widget.service,
+                      newProfile: widget.profile),
+
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    children: [
+                      // 更新ボタン
+                      // ElevatedButton(
+                      //   onPressed: () {
+                      //     // 更新を実行
+                      //     if (newName != null) {
+                      //       widget.profile.name = newName!;
+                      //     }
+                      //     if (newMemo != null) {
+                      //       widget.profile.memo = newMemo!;
+                      //     }
+                      //     widget.service.updateProfile(widget.profile);
+                      //     Navigator.pop(context);
+                      //   },
+                      //   child: const Text('Update'),
+                      // ),
+                      // 削除ボタン
+                      ElevatedButton(
+                        onPressed: () {
+                          // 確認ダイアログを表示
+                          showDialog(
+                              context: context,
+                              builder: (context) {
+                                return _deleteDialog(context,
+                                    profile: widget.profile,
+                                    service: widget.service);
+                              });
+                        },
+                        child: const Text('Delete'),
+                      ),
+                    ],
+                  ),
+                ],
+              ),
             ),
           ),
         ));

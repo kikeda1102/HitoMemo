@@ -28,23 +28,6 @@ class _TagManagementPageState extends State<TagManagementPage> {
         child: Column(
           children: [
             const SizedBox(height: 20),
-            // ユーザー入力によるタグ作成と登録
-            Container(
-              padding: const EdgeInsets.only(left: 30, right: 30),
-              child: TextFormField(
-                onFieldSubmitted: (value) {
-                  setState(() {
-                    // generalタグにも追加
-                    widget.service.addGeneralTag(GeneralTag(title: value));
-                  });
-                },
-                decoration: const InputDecoration(
-                  labelText: 'Create new tag',
-                  border: UnderlineInputBorder(),
-                ),
-              ),
-            ),
-            const SizedBox(height: 20),
 
             const Text('Filter by tags', style: TextStyle(fontSize: 20)),
             const SizedBox(height: 20),
@@ -63,8 +46,8 @@ class _TagManagementPageState extends State<TagManagementPage> {
                 List<GeneralTag> generalTags = snapshot.data!;
 
                 return Wrap(
-                  spacing: 10,
-                  runSpacing: -8,
+                  spacing: 5,
+                  runSpacing: 5,
                   children: generalTags
                       .map(
                         (tag) => InputChip(
@@ -122,7 +105,25 @@ class _TagManagementPageState extends State<TagManagementPage> {
                 );
               },
             ),
+            const SizedBox(height: 20),
+            // ユーザー入力によるタグ作成
+            Container(
+              padding: const EdgeInsets.only(left: 30, right: 30),
+              child: TextFormField(
+                onFieldSubmitted: (value) {
+                  setState(() {
+                    // generalタグにも追加
+                    widget.service.addGeneralTag(GeneralTag(title: value));
+                  });
+                },
+                decoration: const InputDecoration(
+                  labelText: 'Create new tag',
+                  border: UnderlineInputBorder(),
+                ),
+              ),
+            ),
             const SizedBox(height: 40),
+
             const Text('Results', style: TextStyle(fontSize: 20)),
             Expanded(
               child: Padding(
@@ -157,8 +158,8 @@ class _TagManagementPageState extends State<TagManagementPage> {
                               children: [
                                 if (profile.personalTags.isNotEmpty)
                                   Wrap(
-                                    spacing: 4,
-                                    runSpacing: -12,
+                                    spacing: 5,
+                                    runSpacing: 5,
                                     children: profile.personalTags
                                         .map((tag) => Chip(
                                               label: Text(

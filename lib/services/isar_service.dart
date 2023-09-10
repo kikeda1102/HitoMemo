@@ -52,6 +52,12 @@ class IsarService {
     await isar.writeTxn(() => isar.profiles.put(profile));
   }
 
+  // Profilesをupdate
+  Future<void> updateProfiles(List<Profile> profiles) async {
+    final isar = await db;
+    await isar.writeTxn(() => isar.profiles.putAll(profiles));
+  }
+
   // delete
   Future<void> deleteProfile(Profile profile) async {
     final isar = await db;

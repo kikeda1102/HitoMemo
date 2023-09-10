@@ -75,16 +75,30 @@ class HomePage extends StatelessWidget {
                 stream: service.listenToProfiles(),
                 builder: (context, AsyncSnapshot<List<Profile>> snapshot) {
                   if (snapshot.data != null && snapshot.data!.isNotEmpty) {
-                    return ListView.separated(
-                      separatorBuilder: (BuildContext context, int index) =>
-                          const Divider(
-                        color: Colors.grey,
-                        thickness: 1.0,
-                      ),
+                    // TODO: ReorderableListViewにする
+                    return ReorderableListView.builder(
+                      // separatorBuilder: (BuildContext context, int index) =>
+                      //     const Divider(
+                      //   color: Colors.grey,
+                      //   thickness: 1.0,
+                      // ),
+                      onReorder: (oldIndex, newIndex) {
+                        if (oldIndex < newIndex) {
+                          newIndex -= 1;
+                        }
+                        // 順番を入れ替え
+                        final item = snapshot.data!.removeAt(oldIndex);
+                        snapshot.data!.insert(newIndex, item);
+
+                        // 保存
+                        service.updateProfiles(snapshot.data!);
+                      },
                       itemCount: snapshot.data!.length,
                       itemBuilder: (context, index) {
                         final profile = snapshot.data![index];
+
                         return ListTile(
+                          key: Key(profile.id.toString()),
                           title: Text(profile.name),
                           trailing: Text(profile.memo),
                           // タグ

@@ -37,13 +37,18 @@ const ProfileSchema = CollectionSchema(
       name: r'name',
       type: IsarType.string,
     ),
-    r'personalTags': PropertySchema(
+    r'order': PropertySchema(
       id: 4,
+      name: r'order',
+      type: IsarType.long,
+    ),
+    r'personalTags': PropertySchema(
+      id: 5,
       name: r'personalTags',
       type: IsarType.stringList,
     ),
     r'updated': PropertySchema(
-      id: 5,
+      id: 6,
       name: r'updated',
       type: IsarType.dateTime,
     )
@@ -96,8 +101,9 @@ void _profileSerialize(
   writer.writeByteList(offsets[1], object.imageBytes);
   writer.writeString(offsets[2], object.memo);
   writer.writeString(offsets[3], object.name);
-  writer.writeStringList(offsets[4], object.personalTags);
-  writer.writeDateTime(offsets[5], object.updated);
+  writer.writeLong(offsets[4], object.order);
+  writer.writeStringList(offsets[5], object.personalTags);
+  writer.writeDateTime(offsets[6], object.updated);
 }
 
 Profile _profileDeserialize(
@@ -107,14 +113,15 @@ Profile _profileDeserialize(
   Map<Type, List<int>> allOffsets,
 ) {
   final object = Profile(
+    id: id,
     imageBytes: reader.readByteList(offsets[1]),
     memo: reader.readString(offsets[2]),
     name: reader.readString(offsets[3]),
-    personalTags: reader.readStringList(offsets[4]) ?? [],
-    updated: reader.readDateTimeOrNull(offsets[5]),
+    order: reader.readLongOrNull(offsets[4]) ?? -1,
+    personalTags: reader.readStringList(offsets[5]) ?? [],
+    updated: reader.readDateTimeOrNull(offsets[6]),
   );
   object.created = reader.readDateTime(offsets[0]);
-  object.id = id;
   return object;
 }
 
@@ -134,8 +141,10 @@ P _profileDeserializeProp<P>(
     case 3:
       return (reader.readString(offset)) as P;
     case 4:
-      return (reader.readStringList(offset) ?? []) as P;
+      return (reader.readLongOrNull(offset) ?? -1) as P;
     case 5:
+      return (reader.readStringList(offset) ?? []) as P;
+    case 6:
       return (reader.readDateTimeOrNull(offset)) as P;
     default:
       throw IsarError('Unknown property with id $propertyId');
@@ -754,6 +763,59 @@ extension ProfileQueryFilter
     });
   }
 
+  QueryBuilder<Profile, Profile, QAfterFilterCondition> orderEqualTo(
+      int value) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'order',
+        value: value,
+      ));
+    });
+  }
+
+  QueryBuilder<Profile, Profile, QAfterFilterCondition> orderGreaterThan(
+    int value, {
+    bool include = false,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.greaterThan(
+        include: include,
+        property: r'order',
+        value: value,
+      ));
+    });
+  }
+
+  QueryBuilder<Profile, Profile, QAfterFilterCondition> orderLessThan(
+    int value, {
+    bool include = false,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.lessThan(
+        include: include,
+        property: r'order',
+        value: value,
+      ));
+    });
+  }
+
+  QueryBuilder<Profile, Profile, QAfterFilterCondition> orderBetween(
+    int lower,
+    int upper, {
+    bool includeLower = true,
+    bool includeUpper = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.between(
+        property: r'order',
+        lower: lower,
+        includeLower: includeLower,
+        upper: upper,
+        includeUpper: includeUpper,
+      ));
+    });
+  }
+
   QueryBuilder<Profile, Profile, QAfterFilterCondition>
       personalTagsElementEqualTo(
     String value, {
@@ -1091,6 +1153,18 @@ extension ProfileQuerySortBy on QueryBuilder<Profile, Profile, QSortBy> {
     });
   }
 
+  QueryBuilder<Profile, Profile, QAfterSortBy> sortByOrder() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'order', Sort.asc);
+    });
+  }
+
+  QueryBuilder<Profile, Profile, QAfterSortBy> sortByOrderDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'order', Sort.desc);
+    });
+  }
+
   QueryBuilder<Profile, Profile, QAfterSortBy> sortByUpdated() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'updated', Sort.asc);
@@ -1154,6 +1228,18 @@ extension ProfileQuerySortThenBy
     });
   }
 
+  QueryBuilder<Profile, Profile, QAfterSortBy> thenByOrder() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'order', Sort.asc);
+    });
+  }
+
+  QueryBuilder<Profile, Profile, QAfterSortBy> thenByOrderDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'order', Sort.desc);
+    });
+  }
+
   QueryBuilder<Profile, Profile, QAfterSortBy> thenByUpdated() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'updated', Sort.asc);
@@ -1192,6 +1278,12 @@ extension ProfileQueryWhereDistinct
       {bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
       return query.addDistinctBy(r'name', caseSensitive: caseSensitive);
+    });
+  }
+
+  QueryBuilder<Profile, Profile, QDistinct> distinctByOrder() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addDistinctBy(r'order');
     });
   }
 
@@ -1237,6 +1329,12 @@ extension ProfileQueryProperty
   QueryBuilder<Profile, String, QQueryOperations> nameProperty() {
     return QueryBuilder.apply(this, (query) {
       return query.addPropertyName(r'name');
+    });
+  }
+
+  QueryBuilder<Profile, int, QQueryOperations> orderProperty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addPropertyName(r'order');
     });
   }
 

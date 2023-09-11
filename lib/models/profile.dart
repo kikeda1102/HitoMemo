@@ -4,8 +4,8 @@ part 'profile.g.dart';
 
 @Collection()
 class Profile {
-  Id id = Isar.autoIncrement;
-
+  Id id;
+  int order;
   DateTime created;
   DateTime? updated;
   String name;
@@ -15,17 +15,19 @@ class Profile {
 
   // コンストラクタ
   Profile({
+    this.id = Isar.autoIncrement,
+    this.order = -1,
     this.updated,
     required this.name,
     this.imageBytes,
     required this.personalTags,
     required this.memo,
-  })  : id = Isar.autoIncrement,
-        created = DateTime.now();
+  }) : created = DateTime.now();
 
   // copyWithメソッドを実装
   Profile copyWith({
     int? id,
+    int? order,
     DateTime? created,
     DateTime? updated,
     String? name,
@@ -34,7 +36,8 @@ class Profile {
     String? memo,
   }) {
     return Profile(
-      // id: id ?? this.id,
+      id: id ?? this.id,
+      order: order ?? this.order,
       // created: created ?? this.created,
       updated: updated ?? this.updated,
       name: name ?? this.name,

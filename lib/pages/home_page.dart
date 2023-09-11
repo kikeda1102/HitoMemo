@@ -75,23 +75,28 @@ class HomePage extends StatelessWidget {
                 stream: service.listenToProfiles(),
                 builder: (context, AsyncSnapshot<List<Profile>> snapshot) {
                   if (snapshot.data != null && snapshot.data!.isNotEmpty) {
-                    // TODO: ReorderableListViewにする
+                    // sort
+                    snapshot.data!.sort((a, b) => a.order.compareTo(b.order));
+                    // ReorderableListView
                     return ReorderableListView.builder(
-                      // separatorBuilder: (BuildContext context, int index) =>
-                      //     const Divider(
-                      //   color: Colors.grey,
-                      //   thickness: 1.0,
-                      // ),
                       onReorder: (oldIndex, newIndex) {
                         if (oldIndex < newIndex) {
                           newIndex -= 1;
                         }
                         // 順番を入れ替え
-                        final item = snapshot.data!.removeAt(oldIndex);
-                        snapshot.data!.insert(newIndex, item);
-
-                        // 保存
-                        service.updateProfiles(snapshot.data!);
+                        final item = snapshot.data!
+                            .removeAt(oldIndex); // oldIndexを削除し、中身をitemに代入
+                        snapshot.data!
+                            .insert(newIndex, item); // newIndexにitemを挿入
+                        // idにindexの値を代入、db更新
+                        for (var i = 0; i < snapshot.data!.length; i++) {
+                          // index代入
+                          snapshot.data![i] = snapshot.data![i].copyWith(
+                            order: i,
+                          );
+                          // dbに追加
+                          service.updateProfile(snapshot.data![i]);
+                        }
                       },
                       itemCount: snapshot.data!.length,
                       itemBuilder: (context, index) {
@@ -105,6 +110,7 @@ class HomePage extends StatelessWidget {
                           subtitle: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
+                              Text(profile.order.toString()),
                               if (profile.personalTags.isNotEmpty)
                                 Wrap(
                                   spacing: 4,

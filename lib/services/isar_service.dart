@@ -52,7 +52,7 @@ class IsarService {
     await isar.writeTxn(() => isar.profiles.put(profile));
   }
 
-  // Profilesをupdate
+  // Profilesを更新する
   Future<void> updateProfiles(List<Profile> profiles) async {
     final isar = await db;
     await isar.writeTxn(() => isar.profiles.putAll(profiles));
@@ -62,6 +62,12 @@ class IsarService {
   Future<void> deleteProfile(Profile profile) async {
     final isar = await db;
     await isar.writeTxn(() => isar.profiles.delete(profile.id));
+  }
+
+  // delete by id
+  Future<void> deleteProfileById(int id) async {
+    final isar = await db;
+    await isar.writeTxn(() => isar.profiles.delete(id));
   }
 
   // GeneralTag

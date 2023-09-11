@@ -130,7 +130,7 @@ class HomePage extends StatelessWidget {
                           onTap: () => Navigator.of(context).push(
                             MaterialPageRoute(
                                 builder: (context) => ProfileDetailPage(
-                                    profile: profile, service: service)),
+                                    id: profile.id, service: service)),
                           ),
                         );
                       },
@@ -354,7 +354,7 @@ class ProfileSearchDelegate extends SearchDelegate<Profile> {
                   onTap: () => Navigator.of(context).push(
                     MaterialPageRoute(
                       builder: (context) =>
-                          ProfileDetailPage(profile: profile, service: service),
+                          ProfileDetailPage(id: profile.id, service: service),
                     ),
                   ),
                 );
@@ -424,7 +424,7 @@ class ProfileSearchDelegate extends SearchDelegate<Profile> {
                   onTap: () => Navigator.of(context).push(
                     MaterialPageRoute(
                       builder: (context) =>
-                          ProfileDetailPage(profile: profile, service: service),
+                          ProfileDetailPage(id: profile.id, service: service),
                     ),
                   ),
                 );

@@ -41,6 +41,12 @@ class IsarService {
     return await isar.profiles.where().findAll();
   }
 
+  // idでread
+  Future<Profile?> getProfileById(int id) async {
+    final isar = await db;
+    return await isar.profiles.get(id);
+  }
+
   Stream<List<Profile>> listenToProfiles() async* {
     final isar = await db;
     yield* isar.profiles.where().watch(fireImmediately: true); // 初回の要素リストを最初に返す

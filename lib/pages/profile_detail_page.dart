@@ -7,16 +7,26 @@ import 'package:hitomemo/services/isar_service.dart';
 // 編集も遷移なしで行える
 
 class ProfileDetailPage extends StatefulWidget {
-  final Profile profile;
+  final int id;
   final IsarService service;
-  const ProfileDetailPage(
-      {super.key, required this.profile, required this.service});
+  const ProfileDetailPage({super.key, required this.id, required this.service});
 
   @override
   State<ProfileDetailPage> createState() => _ProfileDetailPageState();
 }
 
 class _ProfileDetailPageState extends State<ProfileDetailPage> {
+  // profileの読み込み
+  @override
+  void initState() {
+    Future(() async {
+      profile = await widget.service.getProfileById(widget.id);
+    });
+
+    super.initState();
+  }
+
+  Profile? profile;
   String? newName;
   String? newMemo;
   // State更新メソッド
@@ -28,7 +38,7 @@ class _ProfileDetailPageState extends State<ProfileDetailPage> {
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
-          title: Text(widget.profile.name),
+          title: Text(profile!.name),
         ),
         body: Center(
           child: Padding(
@@ -42,12 +52,11 @@ class _ProfileDetailPageState extends State<ProfileDetailPage> {
                   TextFormField(
                     onChanged: (value) {
                       newName = value;
-                      widget.profile.name = newName!;
+                      profile!.name = newName!;
                       // 更新実行
-                      widget.service.updateProfile(widget.profile);
+                      widget.service.updateProfile(profile!);
                     },
-                    controller:
-                        TextEditingController(text: widget.profile.name),
+                    controller: TextEditingController(text: profile!.name),
                     decoration: const InputDecoration(
                       labelText: 'Name',
                       border: UnderlineInputBorder(),
@@ -67,14 +76,13 @@ class _ProfileDetailPageState extends State<ProfileDetailPage> {
                   TextFormField(
                     onChanged: (value) {
                       newMemo = value;
-                      widget.profile.memo = newMemo!;
+                      profile!.memo = newMemo!;
                       // 更新実行
-                      widget.service.updateProfile(widget.profile);
+                      widget.service.updateProfile(profile!);
                     },
                     maxLines: 10,
                     keyboardType: TextInputType.multiline,
-                    controller:
-                        TextEditingController(text: widget.profile.memo),
+                    controller: TextEditingController(text: profile!.memo),
                     decoration: const InputDecoration(
                       labelText: 'Memo',
                       border: InputBorder.none,
@@ -102,15 +110,14 @@ class _ProfileDetailPageState extends State<ProfileDetailPage> {
                       Wrap(
                         spacing: 5,
                         runSpacing: 5,
-                        children: widget.profile.personalTags
+                        children: profile!.personalTags
                             .map((tag) => InputChip(
                                   label: Text(tag),
                                   onDeleted: () {
                                     setState(() {
-                                      widget.profile.personalTags.remove(tag);
+                                      profile!.personalTags.remove(tag);
                                       // 更新実行
-                                      widget.service
-                                          .updateProfile(widget.profile);
+                                      widget.service.updateProfile(profile!);
                                     });
                                   },
                                 ))
@@ -124,7 +131,7 @@ class _ProfileDetailPageState extends State<ProfileDetailPage> {
                   AddTagWidget(
                       notifyParent: updateProfile,
                       service: widget.service,
-                      newProfile: widget.profile),
+                      newProfile: profile!),
 
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -134,12 +141,12 @@ class _ProfileDetailPageState extends State<ProfileDetailPage> {
                       //   onPressed: () {
                       //     // 更新を実行
                       //     if (newName != null) {
-                      //       widget.profile.name = newName!;
+                      //       profile!.name = newName!;
                       //     }
                       //     if (newMemo != null) {
-                      //       widget.profile.memo = newMemo!;
+                      //       profile!.memo = newMemo!;
                       //     }
-                      //     widget.service.updateProfile(widget.profile);
+                      //     widget.service.updateProfile(profile!);
                       //     Navigator.pop(context);
                       //   },
                       //   child: const Text('Update'),
@@ -152,8 +159,7 @@ class _ProfileDetailPageState extends State<ProfileDetailPage> {
                               context: context,
                               builder: (context) {
                                 return _deleteDialog(context,
-                                    profile: widget.profile,
-                                    service: widget.service);
+                                    profile: profile!, service: widget.service);
                               });
                         },
                         child: const Text('Delete'),

@@ -175,8 +175,7 @@ class _TagManagementPageState extends State<TagManagementPage> {
                             onTap: () => Navigator.of(context).push(
                               MaterialPageRoute(
                                   builder: (context) => ProfileDetailPage(
-                                      profile: profile,
-                                      service: widget.service)),
+                                      id: profile.id, service: widget.service)),
                             ),
                           );
                         },

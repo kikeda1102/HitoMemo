@@ -9,11 +9,14 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 import 'package:hitomemo/main.dart';
+import 'package:hitomemo/services/isar_service.dart';
+// import 'package:isar/isar.dart';
 
 void main() {
   testWidgets('Counter increments smoke test', (WidgetTester tester) async {
     // Build our app and trigger a frame.
-    await tester.pumpWidget(const MyApp());
+    IsarService service = IsarService();
+    await tester.pumpWidget(MyApp(service: service));
 
     // Verify that our counter starts at 0.
     expect(find.text('0'), findsOneWidget);

@@ -28,103 +28,106 @@ class _TagManagementPageState extends State<TagManagementPage> {
         child: Column(
           children: [
             const SizedBox(height: 20),
+            ExpansionTile(
+              initiallyExpanded: true,
+              title:
+                  const Text('Filter by tags', style: TextStyle(fontSize: 20)),
+              children: [
+                const SizedBox(height: 20),
+                // generalタグ
+                FutureBuilder<List<GeneralTag>>(
+                  future: widget.service.getAllGeneralTags(),
+                  builder: (context, snapshot) {
+                    if (snapshot.connectionState == ConnectionState.waiting) {
+                      return const CircularProgressIndicator(); // 読み込み中の表示
+                    } else if (snapshot.hasError) {
+                      return Text('Error: ${snapshot.error}');
+                    } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
+                      return const Text('No Tags');
+                    }
 
-            const Text('Filter by tags', style: TextStyle(fontSize: 20)),
-            const SizedBox(height: 20),
-            // generalタグ
-            FutureBuilder<List<GeneralTag>>(
-              future: widget.service.getAllGeneralTags(),
-              builder: (context, snapshot) {
-                if (snapshot.connectionState == ConnectionState.waiting) {
-                  return const CircularProgressIndicator(); // 読み込み中の表示
-                } else if (snapshot.hasError) {
-                  return Text('Error: ${snapshot.error}');
-                } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
-                  return const Text('No Tags');
-                }
+                    List<GeneralTag> generalTags = snapshot.data!;
 
-                List<GeneralTag> generalTags = snapshot.data!;
-
-                return Wrap(
-                  spacing: 5,
-                  runSpacing: 5,
-                  children: generalTags
-                      .map(
-                        (tag) => InputChip(
-                          label: Text(tag.title),
-                          onSelected: (isSelected) {
-                            setState(() {
-                              if (isSelected) {
-                                filteredTags.add(tag);
-                              } else {
-                                filteredTags.remove(tag);
-                              }
-                            });
-                          },
-                          selected: filteredTags.contains(tag),
-                          onDeleted: () {
-                            setState(() {
-                              // アラートダイアログを出す
-                              showDialog(
-                                context: context,
-                                builder: (context) {
-                                  return AlertDialog(
-                                    title: const Text('Delete this tag?'),
-                                    content: Text(
-                                        'Are you sure to delete "${tag.title}"?'),
-                                    actions: [
-                                      TextButton(
-                                        onPressed: () {
-                                          Navigator.pop(context);
-                                        },
-                                        child: const Text('Cancel'),
-                                      ),
-                                      TextButton(
-                                        onPressed: () {
-                                          // タグを削除
-                                          setState(() {
-                                            widget.service
-                                                .deleteGeneralTag(tag);
-                                          });
-                                          Navigator.pop(context);
-                                        },
-                                        style: TextButton.styleFrom(
-                                            backgroundColor: Colors.red,
-                                            foregroundColor: Colors.white),
-                                        child: const Text('Delete'),
-                                      ),
-                                    ],
+                    return Wrap(
+                      spacing: 5,
+                      runSpacing: 5,
+                      children: generalTags
+                          .map(
+                            (tag) => InputChip(
+                              label: Text(tag.title),
+                              onSelected: (isSelected) {
+                                setState(() {
+                                  if (isSelected) {
+                                    filteredTags.add(tag);
+                                  } else {
+                                    filteredTags.remove(tag);
+                                  }
+                                });
+                              },
+                              selected: filteredTags.contains(tag),
+                              onDeleted: () {
+                                setState(() {
+                                  // アラートダイアログを出す
+                                  showDialog(
+                                    context: context,
+                                    builder: (context) {
+                                      return AlertDialog(
+                                        title: const Text('Delete this tag?'),
+                                        content: Text(
+                                            'Are you sure to delete "${tag.title}"?'),
+                                        actions: [
+                                          TextButton(
+                                            onPressed: () {
+                                              Navigator.pop(context);
+                                            },
+                                            child: const Text('Cancel'),
+                                          ),
+                                          TextButton(
+                                            onPressed: () {
+                                              // タグを削除
+                                              setState(() {
+                                                widget.service
+                                                    .deleteGeneralTag(tag);
+                                              });
+                                              Navigator.pop(context);
+                                            },
+                                            style: TextButton.styleFrom(
+                                                backgroundColor: Colors.red,
+                                                foregroundColor: Colors.white),
+                                            child: const Text('Delete'),
+                                          ),
+                                        ],
+                                      );
+                                    },
                                   );
-                                },
-                              );
-                            });
-                          },
-                        ),
-                      )
-                      .toList(),
-                );
-              },
-            ),
-            const SizedBox(height: 20),
-            // ユーザー入力によるタグ作成
-            Container(
-              padding: const EdgeInsets.only(left: 30, right: 30),
-              child: TextFormField(
-                onFieldSubmitted: (value) {
-                  setState(() {
-                    // generalタグにも追加
-                    widget.service.addGeneralTag(GeneralTag(title: value));
-                  });
-                },
-                decoration: const InputDecoration(
-                  labelText: 'Create new tag',
-                  border: UnderlineInputBorder(),
+                                });
+                              },
+                            ),
+                          )
+                          .toList(),
+                    );
+                  },
                 ),
-              ),
+                const SizedBox(height: 20),
+                // ユーザー入力によるタグ作成
+                Container(
+                  padding: const EdgeInsets.only(left: 30, right: 30),
+                  child: TextFormField(
+                    onFieldSubmitted: (value) {
+                      setState(() {
+                        // generalタグにも追加
+                        widget.service.addGeneralTag(GeneralTag(title: value));
+                      });
+                    },
+                    decoration: const InputDecoration(
+                      labelText: 'Create new tag',
+                      border: UnderlineInputBorder(),
+                    ),
+                  ),
+                ),
+                const SizedBox(height: 40),
+              ],
             ),
-            const SizedBox(height: 40),
-
-            // const Text('Results', style: TextStyle(fontSize: 20)),
             Expanded(
               child: Padding(
                 padding: const EdgeInsets.all(8),

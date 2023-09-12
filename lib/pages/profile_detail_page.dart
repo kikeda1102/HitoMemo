@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:hitomemo/models/profile.dart';
-import 'package:hitomemo/pages/add_person_page.dart';
+import 'package:hitomemo/components/add_tag_widget.dart';
 import 'package:hitomemo/services/isar_service.dart';
 
 // Profile Detail Page
@@ -26,16 +26,20 @@ class _ProfileDetailPageState extends State<ProfileDetailPage> {
     super.initState();
   }
 
-  Profile? profile;
+  Profile profile = Profile(
+    name: '',
+    imageBytes: null,
+    personalTags: List<String>.empty(growable: true),
+    memo: '',
+  );
   String? newName;
   String? newMemo;
+  // List<String>? newPersonalTags;
 
   // State更新メソッド
   void updateProfile() {
     setState(() {});
   }
-
-  // TODO: FutureBuilderで書き直す
 
   @override
   Widget build(BuildContext context) {
@@ -57,6 +61,9 @@ class _ProfileDetailPageState extends State<ProfileDetailPage> {
                   } else if (!snapshot.hasData || snapshot.data == null) {
                     return const Text('No Tags');
                   }
+
+                  // profileにsnapshot.dataを代入
+                  profile = snapshot.data!;
 
                   return Column(
                     crossAxisAlignment: CrossAxisAlignment.center,
@@ -131,11 +138,10 @@ class _ProfileDetailPageState extends State<ProfileDetailPage> {
                                       label: Text(tag),
                                       onDeleted: () {
                                         setState(() {
-                                          snapshot.data!.personalTags!
-                                              .remove(tag);
+                                          profile.personalTags =
+                                              snapshot.data!.personalTags;
                                           // 更新実行
-                                          widget.service
-                                              .updateProfile(snapshot.data!);
+                                          widget.service.updateProfile(profile);
                                         });
                                       },
                                     ))
@@ -149,7 +155,7 @@ class _ProfileDetailPageState extends State<ProfileDetailPage> {
                       AddTagWidget(
                           notifyParent: updateProfile,
                           service: widget.service,
-                          newProfile: snapshot.data!),
+                          profile: snapshot.data!),
 
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceEvenly,

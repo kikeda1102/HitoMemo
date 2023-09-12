@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:hitomemo/services/isar_service.dart';
 import 'package:hitomemo/models/profile.dart';
-import 'package:hitomemo/models/general_tag.dart';
+import 'package:hitomemo/components/add_tag_widget.dart';
 
 // 追加画面
 
@@ -14,10 +14,10 @@ class AddPersonPage extends StatefulWidget {
 }
 
 class _AddPersonPageState extends State<AddPersonPage> {
-  Profile newProfile = Profile(
+  Profile profile = Profile(
     name: '',
     imageBytes: null,
-    personalTags: List<String>.empty(),
+    personalTags: List<String>.empty(growable: true),
     memo: '',
   );
   final _formKey = GlobalKey<FormState>();
@@ -48,7 +48,7 @@ class _AddPersonPageState extends State<AddPersonPage> {
                   padding: const EdgeInsets.only(left: 30, right: 30),
                   child: TextFormField(
                     onChanged: (value) {
-                      newProfile.name = value;
+                      profile.name = value;
                     },
                     controller: _nameTextController,
                     decoration: const InputDecoration(
@@ -73,12 +73,12 @@ class _AddPersonPageState extends State<AddPersonPage> {
                 Wrap(
                   spacing: 5,
                   runSpacing: 5,
-                  children: newProfile.personalTags!
+                  children: profile.personalTags!
                       .map((tag) => InputChip(
                             label: Text(tag),
                             onDeleted: () {
                               setState(() {
-                                newProfile.personalTags!.remove(tag);
+                                profile.personalTags!.remove(tag);
                               });
                             },
                           ))
@@ -93,7 +93,7 @@ class _AddPersonPageState extends State<AddPersonPage> {
                 AddTagWidget(
                     notifyParent: updateProfile,
                     service: widget.service,
-                    newProfile: newProfile),
+                    profile: profile),
 
                 const SizedBox(height: 20),
 
@@ -102,7 +102,7 @@ class _AddPersonPageState extends State<AddPersonPage> {
                   padding: const EdgeInsets.only(left: 30, right: 30),
                   child: TextField(
                     onChanged: (value) {
-                      newProfile.memo = value;
+                      profile.memo = value;
                     },
                     controller: _memoTextController,
                     maxLines: 10,
@@ -119,7 +119,7 @@ class _AddPersonPageState extends State<AddPersonPage> {
                   onPressed: () {
                     if (_formKey.currentState!.validate()) {
                       // profileの追加
-                      widget.service.addProfile(newProfile);
+                      widget.service.addProfile(profile);
                       Navigator.pop(context);
                     }
                   },
@@ -134,98 +134,6 @@ class _AddPersonPageState extends State<AddPersonPage> {
           ),
         ),
       ),
-    );
-  }
-}
-
-class AddTagWidget extends StatefulWidget {
-  final Function() notifyParent;
-  final IsarService service;
-  final Profile newProfile;
-  const AddTagWidget(
-      {required this.notifyParent,
-      required this.service,
-      required this.newProfile,
-      super.key});
-
-  @override
-  State<AddTagWidget> createState() => _AddTagWidgetState();
-}
-
-class _AddTagWidgetState extends State<AddTagWidget> {
-  @override
-  Widget build(BuildContext context) {
-    return ExpansionTile(
-      title: const Text('Add Tags'),
-      children: [
-        // ユーザー入力によるタグ作成と登録
-        Container(
-          padding: const EdgeInsets.only(left: 30, right: 30),
-          child: TextFormField(
-            onFieldSubmitted: (value) {
-              // personalタグに追加
-              widget.newProfile.personalTags!.add(value);
-              // generalタグにも追加
-              widget.service.addGeneralTag(GeneralTag(title: value));
-              widget.notifyParent();
-            },
-            decoration: const InputDecoration(
-              labelText: 'Create new tag',
-              border: UnderlineInputBorder(),
-            ),
-          ),
-        ),
-
-        const SizedBox(height: 20),
-
-        // generalタグ
-        Container(
-          padding: const EdgeInsets.only(left: 30, right: 30),
-          child: const ListTile(
-            title: Text('Choose from general tags'),
-          ),
-        ),
-        FutureBuilder<List<GeneralTag>>(
-          future: widget.service.getAllGeneralTags(),
-          builder: (context, snapshot) {
-            if (snapshot.connectionState == ConnectionState.waiting) {
-              return const CircularProgressIndicator(); // 読み込み中の表示
-            } else if (snapshot.hasError) {
-              return Text('Error: ${snapshot.error}');
-            } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
-              return const Text('No general tags available');
-            }
-
-            List<GeneralTag> generalTags = snapshot.data!;
-            List<GeneralTag> toggledTags = [];
-
-            return Wrap(
-              spacing: 5,
-              runSpacing: 5,
-              children: generalTags
-                  .map(
-                    (tag) => FilterChip(
-                      label: Text(tag.title),
-                      onSelected: (isSelected) {
-                        if (isSelected) {
-                          widget.newProfile.personalTags!.add(tag.title);
-                        } else {
-                          widget.newProfile.personalTags!.remove(tag.title);
-                        }
-                        toggledTags.add(tag);
-                        widget.notifyParent();
-                      },
-                      selected: toggledTags.contains(tag),
-                    ),
-                  )
-                  .toList(),
-            );
-          },
-        ),
-        const SizedBox(
-          height: 20,
-        ),
-      ],
     );
   }
 }

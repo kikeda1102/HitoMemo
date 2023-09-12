@@ -81,11 +81,16 @@ int _profileEstimateSize(
   }
   bytesCount += 3 + object.memo.length * 3;
   bytesCount += 3 + object.name.length * 3;
-  bytesCount += 3 + object.personalTags.length * 3;
   {
-    for (var i = 0; i < object.personalTags.length; i++) {
-      final value = object.personalTags[i];
-      bytesCount += value.length * 3;
+    final list = object.personalTags;
+    if (list != null) {
+      bytesCount += 3 + list.length * 3;
+      {
+        for (var i = 0; i < list.length; i++) {
+          final value = list[i];
+          bytesCount += value.length * 3;
+        }
+      }
     }
   }
   return bytesCount;
@@ -118,7 +123,7 @@ Profile _profileDeserialize(
     memo: reader.readString(offsets[2]),
     name: reader.readString(offsets[3]),
     order: reader.readLongOrNull(offsets[4]) ?? -1,
-    personalTags: reader.readStringList(offsets[5]) ?? [],
+    personalTags: reader.readStringList(offsets[5]),
     updated: reader.readDateTimeOrNull(offsets[6]),
   );
   object.created = reader.readDateTime(offsets[0]);
@@ -143,7 +148,7 @@ P _profileDeserializeProp<P>(
     case 4:
       return (reader.readLongOrNull(offset) ?? -1) as P;
     case 5:
-      return (reader.readStringList(offset) ?? []) as P;
+      return (reader.readStringList(offset)) as P;
     case 6:
       return (reader.readDateTimeOrNull(offset)) as P;
     default:
@@ -816,6 +821,23 @@ extension ProfileQueryFilter
     });
   }
 
+  QueryBuilder<Profile, Profile, QAfterFilterCondition> personalTagsIsNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const FilterCondition.isNull(
+        property: r'personalTags',
+      ));
+    });
+  }
+
+  QueryBuilder<Profile, Profile, QAfterFilterCondition>
+      personalTagsIsNotNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const FilterCondition.isNotNull(
+        property: r'personalTags',
+      ));
+    });
+  }
+
   QueryBuilder<Profile, Profile, QAfterFilterCondition>
       personalTagsElementEqualTo(
     String value, {
@@ -1338,7 +1360,8 @@ extension ProfileQueryProperty
     });
   }
 
-  QueryBuilder<Profile, List<String>, QQueryOperations> personalTagsProperty() {
+  QueryBuilder<Profile, List<String>?, QQueryOperations>
+      personalTagsProperty() {
     return QueryBuilder.apply(this, (query) {
       return query.addPropertyName(r'personalTags');
     });

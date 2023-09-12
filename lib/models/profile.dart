@@ -10,7 +10,7 @@ class Profile {
   DateTime? updated;
   String name;
   List<byte>? imageBytes;
-  List<String> personalTags;
+  List<String>? personalTags;
   String memo;
 
   // コンストラクタ

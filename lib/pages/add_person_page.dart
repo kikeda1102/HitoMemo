@@ -17,7 +17,7 @@ class _AddPersonPageState extends State<AddPersonPage> {
   Profile newProfile = Profile(
     name: '',
     imageBytes: null,
-    personalTags: [],
+    personalTags: List<String>.empty(),
     memo: '',
   );
   final _formKey = GlobalKey<FormState>();
@@ -73,12 +73,12 @@ class _AddPersonPageState extends State<AddPersonPage> {
                 Wrap(
                   spacing: 5,
                   runSpacing: 5,
-                  children: newProfile.personalTags
+                  children: newProfile.personalTags!
                       .map((tag) => InputChip(
                             label: Text(tag),
                             onDeleted: () {
                               setState(() {
-                                newProfile.personalTags.remove(tag);
+                                newProfile.personalTags!.remove(tag);
                               });
                             },
                           ))
@@ -164,7 +164,7 @@ class _AddTagWidgetState extends State<AddTagWidget> {
           child: TextFormField(
             onFieldSubmitted: (value) {
               // personalタグに追加
-              widget.newProfile.personalTags.add(value);
+              widget.newProfile.personalTags!.add(value);
               // generalタグにも追加
               widget.service.addGeneralTag(GeneralTag(title: value));
               widget.notifyParent();
@@ -208,9 +208,9 @@ class _AddTagWidgetState extends State<AddTagWidget> {
                       label: Text(tag.title),
                       onSelected: (isSelected) {
                         if (isSelected) {
-                          widget.newProfile.personalTags.add(tag.title);
+                          widget.newProfile.personalTags!.add(tag.title);
                         } else {
-                          widget.newProfile.personalTags.remove(tag.title);
+                          widget.newProfile.personalTags!.remove(tag.title);
                         }
                         toggledTags.add(tag);
                         widget.notifyParent();

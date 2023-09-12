@@ -111,11 +111,11 @@ class HomePage extends StatelessWidget {
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               Text(profile.order.toString()),
-                              if (profile.personalTags.isNotEmpty)
+                              if (profile.personalTags!.isNotEmpty)
                                 Wrap(
                                   spacing: 4,
                                   runSpacing: -12,
-                                  children: profile.personalTags
+                                  children: profile.personalTags!
                                       .map((tag) => Chip(
                                             label: Text(
                                               tag,
@@ -316,7 +316,7 @@ class ProfileSearchDelegate extends SearchDelegate<Profile> {
             final results = snapshot.data!
                 .where((profile) =>
                     profile.name.toLowerCase().contains(query.toLowerCase()) ||
-                    profile.personalTags.any((tag) =>
+                    profile.personalTags!.any((tag) =>
                         tag.toLowerCase().contains(query.toLowerCase())) ||
                     profile.memo.toLowerCase().contains(query.toLowerCase()))
                 .toList();
@@ -336,11 +336,11 @@ class ProfileSearchDelegate extends SearchDelegate<Profile> {
                   subtitle: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      if (profile.personalTags.isNotEmpty)
+                      if (profile.personalTags!.isNotEmpty)
                         Wrap(
                           spacing: 4,
                           runSpacing: -12,
-                          children: profile.personalTags
+                          children: profile.personalTags!
                               .map((tag) => Chip(
                                     label: Text(
                                       tag,
@@ -386,7 +386,7 @@ class ProfileSearchDelegate extends SearchDelegate<Profile> {
             final results = snapshot.data!
                 .where((profile) =>
                     profile.name.toLowerCase().contains(query.toLowerCase()) ||
-                    profile.personalTags.any((tag) =>
+                    profile.personalTags!.any((tag) =>
                         tag.toLowerCase().contains(query.toLowerCase())) ||
                     profile.memo.toLowerCase().contains(query.toLowerCase()))
                 .toList();
@@ -406,11 +406,11 @@ class ProfileSearchDelegate extends SearchDelegate<Profile> {
                   subtitle: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      if (profile.personalTags.isNotEmpty)
+                      if (profile.personalTags!.isNotEmpty)
                         Wrap(
                           spacing: 4,
                           runSpacing: -12,
-                          children: profile.personalTags
+                          children: profile.personalTags!
                               .map((tag) => Chip(
                                     label: Text(
                                       tag,

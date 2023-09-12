@@ -29,6 +29,15 @@ class IsarService {
   }
 
   // Profile
+
+  // // isEmpty
+  // Future<bool> isEmpty() async {
+  //   final isar = await db;
+  //   // collectionの数を取得
+  //   final count = await isar.profiles.where().count();
+  //   return count == 0;
+  // }
+
   // create
   Future<void> addProfile(Profile newProfile) async {
     final isar = await db;

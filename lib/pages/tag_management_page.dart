@@ -136,7 +136,7 @@ class _TagManagementPageState extends State<TagManagementPage> {
                       // filteredTagsの全てのタグを含むプロフィールを抽出
                       final filteredProfiles = snapshot.data!.where((profile) {
                         return filteredTags.every((tag) {
-                          return profile.personalTags.contains(tag.title);
+                          return profile.personalTags!.contains(tag.title);
                         });
                       }).toList();
 
@@ -156,11 +156,11 @@ class _TagManagementPageState extends State<TagManagementPage> {
                             subtitle: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
-                                if (profile.personalTags.isNotEmpty)
+                                if (profile.personalTags!.isNotEmpty)
                                   Wrap(
                                     spacing: 5,
                                     runSpacing: 5,
-                                    children: profile.personalTags
+                                    children: profile.personalTags!
                                         .map((tag) => Chip(
                                               label: Text(
                                                 tag,

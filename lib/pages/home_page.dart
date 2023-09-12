@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:url_launcher/link.dart';
 import 'package:hitomemo/pages/add_person_page.dart';
 import 'package:hitomemo/pages/profile_detail_page.dart';
 import 'package:hitomemo/services/isar_service.dart';

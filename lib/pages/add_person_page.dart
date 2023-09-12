@@ -93,7 +93,7 @@ class _AddPersonPageState extends State<AddPersonPage> {
                 AddTagWidget(
                     notifyParent: updateProfile,
                     service: widget.service,
-                    profile: profile),
+                    id: profile.id),
 
                 const SizedBox(height: 20),
 
@@ -120,6 +120,7 @@ class _AddPersonPageState extends State<AddPersonPage> {
                     if (_formKey.currentState!.validate()) {
                       // profileの追加
                       widget.service.addProfile(profile);
+                      // TODO: orderの更新
                       Navigator.pop(context);
                     }
                   },

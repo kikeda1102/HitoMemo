@@ -19,11 +19,11 @@ class _ProfileDetailPageState extends State<ProfileDetailPage> {
   // profileの読み込み
   @override
   void initState() {
+    super.initState();
+
     // Future(() async {
     //   profile = await widget.service.getProfileById(widget.id);
     // });
-
-    super.initState();
   }
 
   Profile profile = Profile(
@@ -155,7 +155,7 @@ class _ProfileDetailPageState extends State<ProfileDetailPage> {
                       AddTagWidget(
                           notifyParent: updateProfile,
                           service: widget.service,
-                          profile: snapshot.data!),
+                          id: snapshot.data!.id),
 
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceEvenly,

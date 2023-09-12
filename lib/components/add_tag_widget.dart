@@ -6,11 +6,11 @@ import 'package:hitomemo/models/general_tag.dart';
 class AddTagWidget extends StatefulWidget {
   final Function() notifyParent;
   final IsarService service;
-  final Profile profile;
+  final int id;
   const AddTagWidget(
       {required this.notifyParent,
       required this.service,
-      required this.profile,
+      required this.id,
       super.key});
 
   @override
@@ -18,6 +18,18 @@ class AddTagWidget extends StatefulWidget {
 }
 
 class _AddTagWidgetState extends State<AddTagWidget> {
+  Profile? profile;
+  // profileの読み込み
+  @override
+  void initState() {
+    super.initState();
+
+    Future(() async {
+      profile = await widget.service.getProfileById(widget.id);
+    });
+    print(profile);
+  }
+
   @override
   Widget build(BuildContext context) {
     return ExpansionTile(
@@ -29,7 +41,7 @@ class _AddTagWidgetState extends State<AddTagWidget> {
           child: TextFormField(
             onFieldSubmitted: (value) {
               // personalタグに追加
-              widget.profile.personalTags!.add(value);
+              profile!.personalTags!.add(value);
               // generalタグにも追加
               widget.service.addGeneralTag(GeneralTag(title: value));
               widget.notifyParent();
@@ -73,9 +85,9 @@ class _AddTagWidgetState extends State<AddTagWidget> {
                       label: Text(tag.title),
                       onSelected: (isSelected) {
                         if (isSelected) {
-                          widget.profile.personalTags!.add(tag.title);
+                          profile!.personalTags!.add(tag.title);
                         } else {
-                          widget.profile.personalTags!.remove(tag.title);
+                          profile!.personalTags!.remove(tag.title);
                         }
                         toggledTags.add(tag);
                         widget.notifyParent();

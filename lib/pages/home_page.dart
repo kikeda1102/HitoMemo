@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:url_launcher/link.dart';
 import 'package:hitomemo/pages/add_person_page.dart';
 import 'package:hitomemo/pages/profile_detail_page.dart';
 import 'package:hitomemo/services/isar_service.dart';
@@ -139,7 +140,7 @@ class HomePage extends StatelessWidget {
                   } else {
                     return const Center(
                         child: Text(
-                      'Add a new person by tapping the + button.',
+                      'No people registered',
                       style: TextStyle(fontSize: 15),
                     ));
                   }

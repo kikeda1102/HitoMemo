@@ -5,10 +5,14 @@ import 'package:hitomemo/models/general_tag.dart';
 
 class AddTagWidget extends StatefulWidget {
   final Function() notifyParent;
+  // TODO: onSubmittedに与える関数を宣言
+  // idなどProfileに関する情報は渡す必要ない
+  final Function(String) addTagFunction;
   final IsarService service;
   final int id;
   const AddTagWidget(
       {required this.notifyParent,
+      required this.addTagFunction,
       required this.service,
       required this.id,
       super.key});
@@ -22,11 +26,19 @@ class _AddTagWidgetState extends State<AddTagWidget> {
   // profileの読み込み
   @override
   void initState() {
+    print(widget.id);
     super.initState();
 
     Future(() async {
       profile = await widget.service.getProfileById(widget.id);
     });
+
+    profile ??= Profile(
+      name: '',
+      imageBytes: null,
+      personalTags: List<String>.empty(growable: true),
+      memo: '',
+    );
     print(profile);
   }
 
@@ -39,13 +51,18 @@ class _AddTagWidgetState extends State<AddTagWidget> {
         Container(
           padding: const EdgeInsets.only(left: 30, right: 30),
           child: TextFormField(
-            onFieldSubmitted: (value) {
-              // personalタグに追加
-              profile!.personalTags!.add(value);
-              // generalタグにも追加
-              widget.service.addGeneralTag(GeneralTag(title: value));
-              widget.notifyParent();
-            },
+            onFieldSubmitted:
+                // TODO: 関数を呼び出すだけ
+                widget.addTagFunction,
+
+            //     (value) {
+            //   // personalタグに追加
+            //   print(profile);
+            //   profile!.personalTags.add(value);
+            //   // generalタグにも追加
+            //   widget.service.addGeneralTag(GeneralTag(title: value));
+            //   widget.notifyParent();
+            // },
             decoration: const InputDecoration(
               labelText: 'Create new tag',
               border: UnderlineInputBorder(),
@@ -85,9 +102,10 @@ class _AddTagWidgetState extends State<AddTagWidget> {
                       label: Text(tag.title),
                       onSelected: (isSelected) {
                         if (isSelected) {
-                          profile!.personalTags!.add(tag.title);
+                          print(profile);
+                          profile!.personalTags.add(tag.title);
                         } else {
-                          profile!.personalTags!.remove(tag.title);
+                          profile!.personalTags.remove(tag.title);
                         }
                         toggledTags.add(tag);
                         widget.notifyParent();

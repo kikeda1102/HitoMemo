@@ -41,6 +41,8 @@ class _ProfileDetailPageState extends State<ProfileDetailPage> {
     setState(() {});
   }
 
+  // Tagの追加を行う関数を定義
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -63,6 +65,7 @@ class _ProfileDetailPageState extends State<ProfileDetailPage> {
                   }
 
                   // profileにsnapshot.dataを代入
+                  // TODO: 更新されたとき再取得が必要
                   profile = snapshot.data!;
 
                   return Column(
@@ -133,7 +136,8 @@ class _ProfileDetailPageState extends State<ProfileDetailPage> {
                           Wrap(
                             spacing: 5,
                             runSpacing: 5,
-                            children: snapshot.data!.personalTags!
+                            // TODO: snapshot.data!.personalTagsを更新
+                            children: snapshot.data!.personalTags
                                 .map((tag) => InputChip(
                                       label: Text(tag),
                                       onDeleted: () {
@@ -155,6 +159,9 @@ class _ProfileDetailPageState extends State<ProfileDetailPage> {
                       AddTagWidget(
                           notifyParent: updateProfile,
                           service: widget.service,
+                          addTagFunction: (value) {
+                            widget.service.addTag(widget.id, value);
+                          },
                           id: snapshot.data!.id),
 
                       Row(

@@ -67,6 +67,20 @@ class IsarService {
     await isar.writeTxn(() => isar.profiles.put(profile));
   }
 
+  // TODO: idでタグを追加
+
+  // Tagの追加
+  Future<void> addTag(int id, String newText) async {
+    final isar = await db;
+    // profileを取得
+    final profile = await isar.profiles.get(id);
+    // profileのpersonalTagsに追加
+    if (profile == null) throw Exception('profile is null');
+    profile.personalTags = [...profile.personalTags, newText];
+    // profileを更新
+    await isar.writeTxn(() => isar.profiles.put(profile));
+  }
+
   // Profilesを更新する
   Future<void> updateProfiles(List<Profile> profiles) async {
     final isar = await db;

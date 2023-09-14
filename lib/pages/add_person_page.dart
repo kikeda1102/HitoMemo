@@ -73,12 +73,12 @@ class _AddPersonPageState extends State<AddPersonPage> {
                 Wrap(
                   spacing: 5,
                   runSpacing: 5,
-                  children: profile.personalTags!
+                  children: profile.personalTags
                       .map((tag) => InputChip(
                             label: Text(tag),
                             onDeleted: () {
                               setState(() {
-                                profile.personalTags!.remove(tag);
+                                profile.personalTags.remove(tag);
                               });
                             },
                           ))
@@ -90,10 +90,10 @@ class _AddPersonPageState extends State<AddPersonPage> {
                 ),
 
                 // タグ追加
-                AddTagWidget(
-                    notifyParent: updateProfile,
-                    service: widget.service,
-                    id: profile.id),
+                // AddTagWidget(
+                //     notifyParent: updateProfile,
+                //     service: widget.service,
+                //     id: profile.id),
 
                 const SizedBox(height: 20),
 

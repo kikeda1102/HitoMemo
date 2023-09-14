@@ -67,9 +67,7 @@ class IsarService {
     await isar.writeTxn(() => isar.profiles.put(profile));
   }
 
-  // TODO: idでタグを追加
-
-  // Tagの追加
+  // idによるTagの追加
   Future<void> addTag(int id, String newText) async {
     final isar = await db;
     // profileを取得

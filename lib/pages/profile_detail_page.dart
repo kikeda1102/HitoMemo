@@ -65,7 +65,7 @@ class _ProfileDetailPageState extends State<ProfileDetailPage> {
                   }
 
                   // profileにsnapshot.dataを代入
-                  // TODO: 更新されたとき再取得が必要
+                  // TODO: 更新されたとき描画再取得が必要
                   profile = snapshot.data!;
 
                   return Column(

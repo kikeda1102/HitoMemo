@@ -121,6 +121,7 @@ class _AddPersonPageState extends State<AddPersonPage> {
                       // profileの追加
                       widget.service.addProfile(profile);
                       // TODO: orderの更新
+                      // -1の仕様がよくない
                       Navigator.pop(context);
                     }
                   },

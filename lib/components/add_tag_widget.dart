@@ -4,9 +4,7 @@ import 'package:hitomemo/models/profile.dart';
 import 'package:hitomemo/models/general_tag.dart';
 
 class AddTagWidget extends StatefulWidget {
-  final Function() notifyParent;
-  // TODO: onSubmittedに与える関数を宣言
-  // idなどProfileに関する情報は渡す必要ない
+  final Function() notifyParent; // onSubmittedに与える関数を宣言
   final Function(String) addTagFunction;
   final IsarService service;
   final int id;
@@ -26,7 +24,7 @@ class _AddTagWidgetState extends State<AddTagWidget> {
   // profileの読み込み
   @override
   void initState() {
-    print(widget.id);
+    // print(widget.id);
     super.initState();
 
     Future(() async {
@@ -39,7 +37,7 @@ class _AddTagWidgetState extends State<AddTagWidget> {
       personalTags: List<String>.empty(growable: true),
       memo: '',
     );
-    print(profile);
+    // print(profile);
   }
 
   @override
@@ -102,7 +100,8 @@ class _AddTagWidgetState extends State<AddTagWidget> {
                       label: Text(tag.title),
                       onSelected: (isSelected) {
                         if (isSelected) {
-                          print(profile);
+                          // print(profile);
+                          // addTag, removeTagを呼び出す
                           profile!.personalTags.add(tag.title);
                         } else {
                           profile!.personalTags.remove(tag.title);

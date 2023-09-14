@@ -21,4 +21,4 @@ samples, guidance on mobile development, and a full API reference.
 add_tag_widget.dart
 関数を外部から注入できるように書く
 
-変更をlistenする
+変更をlistenし、DetailWidgetの画面が更新されるようにする

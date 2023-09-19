@@ -162,6 +162,9 @@ class _ProfileDetailPageState extends State<ProfileDetailPage> {
                           addTagFunction: (value) {
                             widget.service.addTag(widget.id, value);
                           },
+                          removeTagFunction: (value) {
+                            widget.service.removeTag(widget.id, value);
+                          },
                           id: snapshot.data!.id),
 
                       Row(

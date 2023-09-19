@@ -44,6 +44,12 @@ class IsarService {
     isar.writeTxnSync<int>(() => isar.profiles.putSync(newProfile));
   }
 
+  // update
+  Future<void> updateProfile(Profile profile) async {
+    final isar = await db;
+    await isar.writeTxn(() => isar.profiles.put(profile));
+  }
+
   // read
   Future<List<Profile>> getAllProfiles() async {
     final isar = await db;
@@ -56,15 +62,10 @@ class IsarService {
     return await isar.profiles.get(id);
   }
 
+  // listen
   Stream<List<Profile>> listenToProfiles() async* {
     final isar = await db;
     yield* isar.profiles.where().watch(fireImmediately: true); // 初回の要素リストを最初に返す
-  }
-
-  // update
-  Future<void> updateProfile(Profile profile) async {
-    final isar = await db;
-    await isar.writeTxn(() => isar.profiles.put(profile));
   }
 
   // idによるTagの追加
@@ -75,6 +76,19 @@ class IsarService {
     // profileのpersonalTagsに追加
     if (profile == null) throw Exception('profile is null');
     profile.personalTags = [...profile.personalTags, newText];
+    // profileを更新
+    await isar.writeTxn(() => isar.profiles.put(profile));
+  }
+
+  // idによるTagの削除
+  Future<void> removeTag(int id, String newText) async {
+    final isar = await db;
+    // profileを取得
+    final profile = await isar.profiles.get(id);
+    // profileのpersonalTagsから削除
+    if (profile == null) throw Exception('profile is null');
+    profile.personalTags =
+        profile.personalTags.where((tag) => tag != newText).toList();
     // profileを更新
     await isar.writeTxn(() => isar.profiles.put(profile));
   }

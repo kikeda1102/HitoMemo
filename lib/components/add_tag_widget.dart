@@ -6,11 +6,13 @@ import 'package:hitomemo/models/general_tag.dart';
 class AddTagWidget extends StatefulWidget {
   final Function() notifyParent; // onSubmittedに与える関数を宣言
   final Function(String) addTagFunction;
+  final Function(String) removeTagFunction;
   final IsarService service;
   final int id;
   const AddTagWidget(
       {required this.notifyParent,
       required this.addTagFunction,
+      required this.removeTagFunction,
       required this.service,
       required this.id,
       super.key});
@@ -102,8 +104,10 @@ class _AddTagWidgetState extends State<AddTagWidget> {
                         if (isSelected) {
                           // print(profile);
                           // addTag, removeTagを呼び出す
-                          profile!.personalTags.add(tag.title);
+                          widget.addTagFunction(tag.title);
+                          // widget.notifyParent();
                         } else {
+                          // TODO: removeTagFunctionを定義し、書き直す
                           profile!.personalTags.remove(tag.title);
                         }
                         toggledTags.add(tag);

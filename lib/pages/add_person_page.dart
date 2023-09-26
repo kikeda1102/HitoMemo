@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:hitomemo/services/isar_service.dart';
 import 'package:hitomemo/models/profile.dart';
-import 'package:hitomemo/components/add_tag_widget.dart';
+// import 'package:hitomemo/components/add_tag_widget.dart';
 
 // 追加画面
 
@@ -124,6 +124,7 @@ class _AddPersonPageState extends State<AddPersonPage> {
                       // -1の仕様がよくない
                       Navigator.pop(context);
                     }
+                    // print(_formKey);
                   },
                   child: const Text('register'),
                 ),
